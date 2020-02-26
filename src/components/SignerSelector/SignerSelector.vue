@@ -1,7 +1,7 @@
 <template>
   <FormRow class-name="emphasis">
     <template v-slot:label>
-      {{ $t('sender') }}:
+      FROM
     </template>
     <template v-slot:inputs>
       <div class="inputs-container select-container">

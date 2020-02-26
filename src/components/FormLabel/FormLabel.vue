@@ -12,3 +12,11 @@ import {Component, Vue} from 'vue-property-decorator'
 @Component
 export default class FormLabel extends Vue {}
 </script>
+
+<style lang="less">
+
+.form-label {
+  text-align: center
+}
+
+</style>

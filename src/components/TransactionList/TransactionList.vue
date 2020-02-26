@@ -9,13 +9,13 @@
           @input="onTabChange"
         >
           <TabPane
-            :label="$t('transactions_tab_confirmed')"
+            :label="$t('transactions_history')"
             :tab="'confirmed'"
             :name="'confirmed'"
             class="transaction-tab-inner-container"
             @input="currentTab = 'confirmed'"
           >
-            <PageTitle :title="$t('transactions')" @refresh="refresh('confirmed')" />
+            <!-- <PageTitle :title="$t('transactions')" @refresh="refresh('confirmed')" /> -->
 
             <!-- Confirmed transactions tab -->
             <TransactionTable :transactions="currentPageTransactions.items" @click="onClickTransaction" />

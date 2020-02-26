@@ -1,7 +1,7 @@
 <template>
   <FormRow class-name="emphasis">
     <template v-slot:label>
-      {{ $t('transfer_target') }}:
+      TO
     </template>
     <template v-slot:inputs>
       <ValidationProvider

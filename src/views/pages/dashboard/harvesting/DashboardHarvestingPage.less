@@ -1,23 +1,164 @@
+@import "../../../../views/resources/css/variables.less";
+
 .harvesting-container {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: 100%;
-  grid-template-columns: 7.2rem auto;
+  grid-template-rows: 3rem 3.3rem;
+  grid-template-columns: 100%;
   background-color: white;
 
-  .left-container {
-    height: 100%;
-    width: 100%;
-    background-color: white;
-    position: relative;
-    padding-left: 0.5rem;
+  .top-container {
+
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 5rem auto;
+
+    .left-container {
+      height: 100%;
+      width: 100%;
+      background-color: white;
+      position: relative;
+      padding: 0.3rem 0 0 0.7rem;
+
+      .top-title {
+        margin-bottom: 0.25rem;
+      }
+
+      .bottom-amount {
+        margin-bottom: 0.3rem;
+      }
+
+      .title-large {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 22px;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .title-min {
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 22px;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      .amount-large {
+        font-size: 42px;
+        font-weight: 400;
+        line-height: 35px;
+        color: rgba(82, 0, 198, 1);
+        margin-right: 15px;
+      }
+
+      .amount-min {
+        font-size: 26px;
+        font-weight: 400;
+        line-height: 35px;
+        color: rgba(82, 0, 198, 1);
+      }
+    }
+
+    .right-container {
+      display: grid;
+      grid-template-rows: auto auto;
+      grid-template-columns: auto auto;
+      padding-top: 0.3rem;
+      padding-right: 0.9rem;
+      grid-row-gap: 0.12rem;
+      grid-column-gap: 0.23rem;
+      width: 100%;
+      height: 100%;
+
+      .first-box {
+        background: rgba(82, 0, 198, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+
+      }
+
+      .second-box {
+        background: rgba(68, 0, 78, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+      }
+
+      .third-box {
+        background: rgba(196, 115, 0, 1);
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+      }
+
+      .fourth-box {
+        background: rgba(248, 248, 248, 1);
+        color: rgba(68, 0, 78, 1);
+      }
+    }
+
   }
 
-  .right-container {
-    width: 100%;
-    height: 100%;
-    background-color: lightgoldenrodyellow;
+  .bottom-container {
+    position: relative;
+
+    P {
+      height: 39px;
+      font-size: 29px;
+      padding-left: 36px;
+      margin-top: 0.25rem;
+      margin-bottom: 0.05rem;
+      font-weight: 400;
+      line-height: 39px;
+      color: rgba(153, 153, 153, 1);
+    }
+
+    .harvesting-list {
+      padding: 0 36px;
+
+      .ivu-table-cell {
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 22px;
+        color: rgba(68, 0, 78, 1);
+      }
+    }
+
+    .page-container {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      font-size: @normalFont;
+      text-align: right;
+      display: block;
+      overflow: hidden;
+      padding-right: 0.3rem;
+
+      .ivu-page-item {
+        width: 30px;
+        min-width: 30px;
+        height: 30px;
+        border: none;
+        color: @grayDark;
+      }
+
+      .ivu-page-item-active a,
+      .ivu-page-item-active:hover a {
+        color: @primary  !important;
+      }
+
+      .ivu-page-prev,
+      .ivu-page-next {
+        border: none;
+      }
+
+      span {
+        vertical-align: middle;
+      }
+
+      .page_content {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .ivu-page-item-active {
+        border-radius: 50%;
+      }
+    }
   }
 }
-  
