@@ -1,7 +1,7 @@
 // @ts-ignore
 import ImportMnemonic from '@/components/ImportMnemonic/ImportMnemonic.vue'
 // @ts-ignore
-import RightTipDisplay from '@/components/RightTipDisplay/RightTipDisplay.vue'
+import PageTipDisplay from '@/components/PageTipDisplay/PageTipDisplay.vue'
 import { MnemonicPassPhrase } from 'nem2-hd-wallets'
 import { Component, Vue } from 'vue-property-decorator'
 // @ts-ignore
@@ -9,7 +9,7 @@ import ButtonStep from '@/components/ButtonStep/ButtonStep.vue'
 
 @Component({
   components: {
-    RightTipDisplay,
+    PageTipDisplay,
     ImportMnemonic,
     ButtonStep,
   },
@@ -35,5 +35,10 @@ export default class ImportMnemonicTs extends Vue {
 
     // redirect
     return this.$router.push({name: 'accounts.import.accountInfo'})
+  }
+
+  jump() {
+    this.mnemonicContent = 'panda impact arrow sign escape pluck journey road tunnel work hedgehog clock vast grocery save suggest width dust frost body craft rescue predict rude'.split(' ')
+    this.submit()
   }
 }

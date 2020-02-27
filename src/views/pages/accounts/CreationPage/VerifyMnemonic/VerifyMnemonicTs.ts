@@ -20,7 +20,7 @@ import {MnemonicPassPhrase} from 'nem2-hd-wallets'
 
 import {Vue, Component} from 'vue-property-decorator'
 // @ts-ignore
-import RightTipDisplay from '@/components/RightTipDisplay/RightTipDisplay.vue'
+import PageTipDisplay from '@/components/PageTipDisplay/PageTipDisplay.vue'
 // @ts-ignore
 import MnemonicVerification from '@/components/MnemonicVerification/MnemonicVerification.vue'
 // @ts-ignore
@@ -28,7 +28,7 @@ import ButtonStep from '@/components/ButtonStep/ButtonStep.vue'
 
 @Component({
   components: {
-    RightTipDisplay,
+    PageTipDisplay,
     MnemonicVerification,
     ButtonStep,
   },

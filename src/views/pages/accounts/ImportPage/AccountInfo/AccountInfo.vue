@@ -1,12 +1,12 @@
 <template>
   <div class="account-info-page-wrapper">
-    <div class="account-info-container">
-      <FormAccountSetting />
-    </div>
-    <div class="right-tip-container">
-      <RightTipDisplay 
+    <div class="page-tip-container">
+      <PageTipDisplay 
         :tip-content="tipContents"
       />
+    </div>
+    <div class="account-info-container">
+      <FormAccountSetting />
     </div>
   </div>
 </template>

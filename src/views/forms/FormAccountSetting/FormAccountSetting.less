@@ -1,14 +1,13 @@
 @import "../../../views/resources/css/variables.less";
 
 .form-account-setting-wrapper {
-  // margin-right: 100px;
-
-  // .title {
-  //     font-size    : 24px;
-  //     color        : #999999;
-  //     margin-bottom: 18px;
-  // }
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 28px;
+
   .form-row-item {
     color: #333333;
     display        : flex;
@@ -19,7 +18,7 @@
       font-weight: 400;
       min-width      : 2rem;
       font-size: 0.2rem;
-      text-align: right;
+      text-align: left;
       padding-right: 0.15rem;
     }
 
@@ -49,10 +48,30 @@
     }
   }
 
-  .form-button-container {
+  .form-button-row {
     width: 9.75rem;
-    padding-right: 0.15rem;
     display: flex;
+    align-self: flex-end;
     justify-content: flex-end;
+    flex-grow: 1;
+    
+    .form-button-container {
+      height: 0.56rem;
+      display: flex;
+      justify-content: flex-end;  
+      align-self: flex-end;    
+    }
+  }
+}
+
+.form-account-setting-wrapper>span {
+  display: block;
+  height: 100%;
+
+  form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

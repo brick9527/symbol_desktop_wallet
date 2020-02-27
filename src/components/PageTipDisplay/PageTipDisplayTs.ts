@@ -16,7 +16,7 @@
 import {Component, Prop, Vue} from 'vue-property-decorator'
 
 @Component
-export class RightTipDisplayTs extends Vue {
+export class PageTipDisplayTs extends Vue {
   @Prop({
     default: 'Warm_tips',
   })

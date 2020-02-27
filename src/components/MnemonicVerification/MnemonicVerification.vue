@@ -18,10 +18,10 @@
     </div>
     <div class="verify-mnemonic-button-container">
       <ButtonStep @click="$emit('cancelled')">
-        {{ $t('previous') }}
+        {{ $t('Previous_step') }}
       </ButtonStep>
       <ButtonStep :primary="true" @click="processVerification()">
-        {{ $t('next') }}
+        {{ $t('Next_step') }}
       </ButtonStep> 
     </div>
   </div>

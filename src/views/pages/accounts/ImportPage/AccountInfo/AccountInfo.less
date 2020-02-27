@@ -2,9 +2,12 @@
 
 .account-info-page-wrapper {
   display: flex;
+  flex-direction: column;
+  height: calc(100% - 44px);
+
   .account-info-container {
     display: inline-block;
-    width: 1200px;
+    width: 100%;
     clear: both;
     min-height: 1rem;
     .form-row {
@@ -26,12 +29,8 @@
       font-weight: bolder;
     }
   }
-  .right-tip-container {
-    // margin-top: 70px;
-    // margin-left: -10px;
-    // min-height: 100px;
-    margin-top: 30px;
-    width: 410px;
+  .page-tip-container {
+    width: 100%;
     min-height: 100px;
   }
 }

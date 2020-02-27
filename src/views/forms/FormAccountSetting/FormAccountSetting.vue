@@ -106,13 +106,15 @@
             </ValidationProvider>
           </div>
         </div>
-        <div class="form-button-container">
-          <ButtonStep @click="$router.back()">
-            {{ $t('previous') }}
-          </ButtonStep>
-          <ButtonStep :primary="true" @click="handleSubmit(submit)">
-            {{ $t('next') }}
-          </ButtonStep>
+        <div class="form-button-row">
+          <div class="form-button-container input-size">
+            <ButtonStep @click="$router.back()">
+              {{ $t('Previous_step') }}
+            </ButtonStep>
+            <ButtonStep :primary="true" @click="handleSubmit(submit)">
+              {{ $t('Next_step') }}
+            </ButtonStep>
+          </div>
         </div>
       </form>
     </ValidationObserver>

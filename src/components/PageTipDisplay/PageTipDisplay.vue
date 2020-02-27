@@ -1,5 +1,5 @@
 <template>
-  <div class="right-tip-wrapper">
+  <div class="page-tip-wrapper">
     <div class="tip-title">
       {{ $t(tipTitle) }}
     </div>
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { RightTipDisplayTs } from './RightTipDisplayTs'
-import './RightTipDisplay.less'
-export default class RightTipDisplay extends RightTipDisplayTs{}
+import { PageTipDisplayTs } from './PageTipDisplayTs'
+import './PageTipDisplay.less'
+export default class PageTipDisplay extends PageTipDisplayTs{}
 </script>

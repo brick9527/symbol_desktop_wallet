@@ -1,11 +1,12 @@
 <template>
   <div class="import-mnemonic-page-wrapper">
+    <span @click="jump">跳过</span>
     <div class="import-mnemonic-page-container">
       <div class="import-mnemonic-container">
         <ImportMnemonic @finish-data="updateMnemonic" />
       </div>
-      <div class="right-tip-container">
-        <RightTipDisplay 
+      <div class="page-tip-container">
+        <PageTipDisplay 
           :tip-content="tipContents"
         />
       </div>

@@ -1,13 +1,13 @@
 <template>
   <div class="backup-mnemonic-page-wrapper">
     <div class="backup-mnemonic-page-container">
-      <div class="backup-mnemonic-container">
-        <MnemonicDisplay :mnemonic-list="mnemonicList" />
-      </div>
-      <div class="right-tip-container">
-        <RightTipDisplay 
+      <div class="page-tip-container">
+        <PageTipDisplay 
           :tip-content="tipContents"
         />
+      </div>
+      <div class="backup-mnemonic-container">
+        <MnemonicDisplay :mnemonic-list="mnemonicList" />
       </div>
     </div>
     <div class="button-container">

@@ -1,29 +1,33 @@
+@import '../../views/resources/css/variables.less';
+
 .step-button {
     width: 210px;
     height: 100%;
     margin-left: 16px;
     line-height: 0.5rem;
     text-align: center;
-    background: rgba(68, 0, 78, 1);
-    border: 1px solid rgba(112, 112, 112, 1);
+    background: @white;
+    border: 2px solid @purple;
 
     .content {
         font-size: 20px;
         font-weight: 400;
-        color: rgba(242, 242, 242, 1);
+        color: @purple;
     }
     &:hover {
         cursor: pointer;
-        background: rgb(109, 0, 126);
+        background: rgba(82,0,198, .07);
     }
 }
 
 .primary-button {
-    background: rgba(153,153,153,1);
+    background: @secondary;
 
+    .content {
+        color: @white;
+    }
     &:hover {
-        border: 1px solid rgba(112, 112, 112, .6);
         cursor: pointer;
-        background: rgba(153,153,153,.7);
+        background: #693371;
     }
 }

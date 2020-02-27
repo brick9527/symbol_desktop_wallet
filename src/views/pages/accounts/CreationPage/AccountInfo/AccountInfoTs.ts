@@ -1,5 +1,5 @@
 // @ts-ignore
-import RightTipDisplay from '@/components/RightTipDisplay/RightTipDisplay.vue'
+import PageTipDisplay from '@/components/PageTipDisplay/PageTipDisplay.vue'
 // @ts-ignore
 import FormAccountSetting from '@/views/forms/FormAccountSetting/FormAccountSetting.vue'
 import { Component, Vue } from 'vue-property-decorator'
@@ -8,7 +8,7 @@ import ButtonStep from '@/components/ButtonStep/ButtonStep.vue'
 
 @Component({
   components: {
-    RightTipDisplay,
+    PageTipDisplay,
     FormAccountSetting,
     ButtonStep,
   },
