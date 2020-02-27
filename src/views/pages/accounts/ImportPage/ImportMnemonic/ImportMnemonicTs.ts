@@ -1,8 +1,9 @@
-import {Vue, Component} from 'vue-property-decorator'
-// @ts-ignore
-import RightTipDisplay from '@/components/RightTipDisplay/RightTipDisplay.vue'
 // @ts-ignore
 import ImportMnemonic from '@/components/ImportMnemonic/ImportMnemonic.vue'
+// @ts-ignore
+import RightTipDisplay from '@/components/RightTipDisplay/RightTipDisplay.vue'
+import { MnemonicPassPhrase } from 'nem2-hd-wallets'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({
   components: {
@@ -25,10 +26,8 @@ export default class ImportMnemonicTs extends Vue {
   }
 
   submit() {
-    // const seed = this.mnemonicContent.join(' ')
-    const seed = 'label unique coffee west cram tomato certain stadium torch guide few wide south boost shift loan result oyster junk near jaguar slim polar disease'
     // update state
-    this.$store.dispatch('temporary/SET_MNEMONIC', seed)
+    this.$store.dispatch('temporary/SET_MNEMONIC', new MnemonicPassPhrase( this.mnemonicContent.toString()))
     this.$store.dispatch('notification/ADD_SUCCESS', this.$t('Generate_entropy_increase_success'))
 
     // redirect

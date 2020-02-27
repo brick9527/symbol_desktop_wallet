@@ -2,12 +2,19 @@
   <div class="import-mnemonic-page-wrapper">
     <div class="import-mnemonic-container">
       <ImportMnemonic @finish-data="updateMnemonic" />
-      <button @click="submit">跳过</button>
     </div>
     <div class="right-tip-container">
       <RightTipDisplay 
         :tip-content="tipContents"
       />
+    </div>
+    <div class="button-container">
+      <ButtonStep @click="$router.go(-1)">
+        {{ $t('Previous_step') }}
+      </ButtonStep>
+      <ButtonStep :primary="true" @click="submit">
+        {{ $t('Next_step') }}
+      </ButtonStep>
     </div>
   </div>
 </template>

@@ -11,10 +11,10 @@
       </RadioGroup>
     </div>
     <textarea v-model="mnemonicContent" class="show-mnemonic" @change="submitData" />
-    <p class="bottom-text">
+    <!--<p class="bottom-text">
       {{ $t('mnemonic_hash_code') }}：
       <span>{{ hashCode }}</span>
-    </p>
+    </p>-->
   </div>
 </template>
 

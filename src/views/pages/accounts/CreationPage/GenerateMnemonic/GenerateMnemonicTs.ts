@@ -71,6 +71,7 @@ export default class GenerateMnemonicTs extends Vue {
    */
   private async saveMnemonicAndGoToNextPage() {
     try {
+      console.info(this.entropy,'this.entropy');
       // act
       const entropy = CryptoJS.SHA256(this.entropy).toString()
       const seed = MnemonicPassPhrase.createFromEntropy(entropy)
