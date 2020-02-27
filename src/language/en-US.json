@@ -1158,7 +1158,7 @@
   "Set_repeat_password": "Confirpassword",
   "Set_password_hint": "Hint",
   "verify_backup_tips_content": "Mnemonic words cannot be recovered or recovered if they are backed up incorrectly. Please check the words and order carefully.",
-  "Set_account_description_tips1": "Set_account_description_tips1",
+  "Set_account_description_tips1": "Set a password to encrypt the current mnemonic. The complexity of this password affects the security of the mnemonic",
   "Set_account_description_tips2": "this password will not be stored anywhere, can not be retrieved, please be sure to properly set and keep",
   "import_mnemonic_tips_comtent_one": "Mnemonic  following the HD WALLET protocol, consisting of 12/24 words, will be able toanipulate all assets under the seed.",
   "import_mnemonic_tips_comtent_two": "This words is encrypted and saved on your local computer. Please pay attention to backup security.",

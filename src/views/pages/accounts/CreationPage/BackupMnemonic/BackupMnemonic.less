@@ -1,28 +1,30 @@
 @import '../../../../resources/css/variables.less';
 
 .backup-mnemonic-page-wrapper {
-  display: flex;
-  justify-content: center;
-  height: calc(100% - 104px);
-
-  .backup-mnemonic-container {
-    width: 1200px;
-    min-height: 100px;
-    padding-right: 40px;
+  .backup-mnemonic-page-container {
+    display: flex;
+    justify-content: center;
+    height: calc(100% - 104px);
+  
+    .backup-mnemonic-container {
+      width: 1200px;
+      min-height: 100px;
+      padding-right: 40px;
+    }
+  
+    .right-tip-container {
+      margin-top: 30px;
+      width: 410px;
+      min-height: 100px;
+    }
   }
-
-  .right-tip-container {
-    margin-top: 30px;
-    width: 410px;
-    min-height: 100px;
+  
+  .button-container {
+    margin-top: 0.2rem;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
   }
 }
-.button-container {
-  max-height: 100px;
-  width: 100%;
-  padding: 150px 0 0;
-  display: flex;
-  float: right;
-  align-items: flex-end;
-  justify-content: flex-end;
-}
+

@@ -13,12 +13,18 @@ import { MnemonicPassPhrase } from 'nem2-hd-wallets'
 import { AccountsModel } from '@/core/database/entities/AccountsModel'
 import { NotificationType } from '@/core/utils/NotificationType'
 import { WalletsModel, WalletType } from '@/core/database/entities/WalletsModel'
+// @ts-ignore
+import ButtonStep from '@/components/ButtonStep/ButtonStep.vue'
 
 
 type NetworkNodeEntry = {value: NetworkType, label: string}
 
 @Component({
-  components: {SelectAccountTable,TableTitle},
+  components: {
+    SelectAccountTable,
+    TableTitle,
+    ButtonStep,
+  },
 })
 export default class GenerateWalletTs extends Vue {
   /**

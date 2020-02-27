@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="backup-mnemonic-page-wrapper">
+  <div class="backup-mnemonic-page-wrapper">
+    <div class="backup-mnemonic-page-container">
       <div class="backup-mnemonic-container">
         <MnemonicDisplay :mnemonic-list="mnemonicList" />
       </div>

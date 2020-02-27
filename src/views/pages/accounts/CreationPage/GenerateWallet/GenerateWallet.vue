@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div class="generate-wallet-page-wrapper">
+  <div class="generate-wallet-page-wrapper">
+    <div class="generate-wallet-page-container">
       <div class="import-wallet">
         <div class="select-network">
           <div class="title">

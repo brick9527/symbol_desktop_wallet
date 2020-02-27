@@ -4,11 +4,14 @@ import ImportMnemonic from '@/components/ImportMnemonic/ImportMnemonic.vue'
 import RightTipDisplay from '@/components/RightTipDisplay/RightTipDisplay.vue'
 import { MnemonicPassPhrase } from 'nem2-hd-wallets'
 import { Component, Vue } from 'vue-property-decorator'
+// @ts-ignore
+import ButtonStep from '@/components/ButtonStep/ButtonStep.vue'
 
 @Component({
   components: {
     RightTipDisplay,
     ImportMnemonic,
+    ButtonStep,
   },
 })
 export default class ImportMnemonicTs extends Vue {

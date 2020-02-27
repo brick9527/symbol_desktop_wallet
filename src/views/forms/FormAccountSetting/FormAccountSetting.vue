@@ -108,10 +108,10 @@
         </div>
         <div class="form-button-container">
           <ButtonStep @click="$router.back()">
-            上一步
+            {{ $t('previous') }}
           </ButtonStep>
           <ButtonStep :primary="true" @click="handleSubmit(submit)">
-            下一步
+            {{ $t('next') }}
           </ButtonStep>
         </div>
       </form>

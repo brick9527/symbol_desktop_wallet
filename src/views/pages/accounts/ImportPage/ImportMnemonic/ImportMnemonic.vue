@@ -1,12 +1,14 @@
 <template>
   <div class="import-mnemonic-page-wrapper">
-    <div class="import-mnemonic-container">
-      <ImportMnemonic @finish-data="updateMnemonic" />
-    </div>
-    <div class="right-tip-container">
-      <RightTipDisplay 
-        :tip-content="tipContents"
-      />
+    <div class="import-mnemonic-page-container">
+      <div class="import-mnemonic-container">
+        <ImportMnemonic @finish-data="updateMnemonic" />
+      </div>
+      <div class="right-tip-container">
+        <RightTipDisplay 
+          :tip-content="tipContents"
+        />
+      </div>
     </div>
     <div class="button-container">
       <ButtonStep @click="$router.go(-1)">
