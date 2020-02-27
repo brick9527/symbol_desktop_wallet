@@ -30,7 +30,7 @@ export default class ImportStrategyTs extends Vue {
       image: walletTypeImages.seedImg,
       title: 'Import_Seed',
       description: 'Import_Mnemonic_phrase_directly_to_make_an_account',
-      route: 'accounts.importAccount.info',
+      route: 'accounts.import.importMnemonic',
     },
     {
       image: walletTypeImages.trezorImg,
@@ -61,11 +61,5 @@ export default class ImportStrategyTs extends Vue {
         nextPage:'accounts.importAccount.importMnemonic',
       },
     })
-  }
-
-  testModel: boolean = false
-
-  get isTestModel() {
-    return this.testModel
   }
 }

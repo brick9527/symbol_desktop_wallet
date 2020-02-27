@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import i18n from '@/language'
-import { createStepImage, importStepImage } from '@/views/resources/Images'
 import { AppRoute } from './AppRoute'
 
 export const routes: AppRoute[] = [
@@ -42,107 +41,7 @@ export const routes: AppRoute[] = [
             name: 'accounts.importAccount.importStrategy',
             meta: { protected: false },
             // @ts-ignore
-            component: () => import('@/views/pages/accounts/import-account/import-strategy/ImportStrategy.vue'),
-          },
-          {
-            path: 'create',
-            name: 'accounts.createAccount',
-            meta: { protected: false },
-            // @ts-ignore
-            component: () => import('@/views/pages/accounts/create-account/CreateAccount.vue'),
-            children: [
-              {
-                path: 'info',
-                name: 'accounts.createAccount.info',
-                meta: {
-                  protected: false,
-                  icon: createStepImage.createStepImage1,
-                  nextPage:'accounts.createAccount.generateMnemonic',
-                },
-                // @ts-ignore
-                component: () => import('@/views/forms/FormAccountSetting/FormAccountSetting.vue'),
-              }, {
-                path: 'generateMnemonic',
-                name: 'accounts.createAccount.generateMnemonic',
-                meta: {
-                  protected: false,
-                  icon: createStepImage.createStepImage2
-                },
-                // @ts-ignore
-                component: () => import('@/views/pages/accounts/create-account/generate-mnemonic/GenerateMnemonic.vue'),
-              }, {
-                path: 'showMnemonic',
-                name: 'accounts.createAccount.showMnemonic',
-                meta: {
-                  protected: false,
-                  icon: createStepImage.createStepImage3
-                },
-                // @ts-ignore
-                component: () => import('@/views/pages/accounts/create-account/show-mnemonic/ShowMnemonic.vue'),
-              }, {
-                path: 'verifyMnemonic',
-                name: 'accounts.createAccount.verifyMnemonic',
-                meta: {
-                  protected: false,
-                  icon: createStepImage.createStepImage4
-                },
-                // @ts-ignore
-                component: () => import('@/views/pages/accounts/create-account/verify-mnemonic/VerifyMnemonic.vue'),
-              }, {
-                path: 'finishCreate',
-                name: 'accounts.createAccount.finalize',
-                meta: {
-                  protected: false,
-                  icon: createStepImage.createStepImage5
-                },
-                // @ts-ignore
-                component: () => import('@/views/pages/accounts/create-account/finalize/Finalize.vue'),
-              }],
-          },
-          {
-            path: 'import',
-            name: 'accounts.importAccount',
-            meta: { protected: false },
-            // @ts-ignore
-            component: () => import('@/views/pages/accounts/import-account/ImportAccount.vue'),
-            children: [{
-              path: 'inputAccountInfo',
-              name: 'accounts.importAccount.info',
-              meta: {
-                protected: false,
-                icon: importStepImage.importStepImage1,
-                nextPage:'accounts.importAccount.importMnemonic',
-              },
-              // @ts-ignore
-              component: () => import('@/views/forms/FormAccountSetting/FormAccountSetting.vue'),
-            },{
-              path: 'importMnemonic',
-              name: 'accounts.importAccount.importMnemonic',
-              meta: {
-                protected: false,
-                icon: importStepImage.importStepImage2
-              },
-              // @ts-ignore
-              component: () => import('@/views/pages/accounts/import-account/import-mnemonic/ImportMnemonic.vue'),
-            }, {
-              path: 'walletChoose',
-              name: 'accounts.importAccount.walletSelection',
-              meta: {
-                protected: false,
-                icon: importStepImage.importStepImage3
-              },
-              // @ts-ignore
-              component: () => import('@/views/pages/accounts/import-account/wallet-selection/WalletSelection.vue'),
-            }, {
-              path: 'finishImport',
-              name: 'accounts.importAccount.finalize',
-              meta: {
-                protected: false,
-                icon: importStepImage.importStepImage4
-              },
-              // @ts-ignore
-              component: () => import('@/views/pages/accounts/import-account/finalize/Finalize.vue'),
-            }],
+            component: () => import('@/views/pages/accounts/ImportPage/ImportStrategy/ImportStrategy.vue'),
           },
           {
             path: 'creationPage',
