@@ -25,9 +25,11 @@ import { WalletsModel, WalletType } from '@/core/database/entities/WalletsModel'
 import { NotificationType } from '@/core/utils/NotificationType'
 import { AccountsRepository } from '@/repositories/AccountsRepository'
 import { WalletsRepository } from '@/repositories/WalletsRepository'
+import { AESEncryptionService } from '@/services/AESEncryptionService'
 import { DerivationPathLevels, DerivationService } from '@/services/DerivationService'
 import { MosaicService } from '@/services/MosaicService'
 import { WalletService } from '@/services/WalletService'
+import CryptoJS from 'crypto-js'
 import { MnemonicPassPhrase } from 'nem2-hd-wallets'
 import { Address, MosaicId, NetworkType, Password, SimpleWallet } from 'nem2-sdk'
 import { Component, Vue } from 'vue-property-decorator'
@@ -173,8 +175,9 @@ export default class GenerateWalletTs extends Vue {
    * @return {void}
    */
   private async initAccounts() {
+    console.info(this.networkType,'this.networkType')
     // - generate addresses
-    this.generaterAddress( NetworkType.TEST_NET,10)
+    this.generaterAddress(this.networkType,10)
     // fetch accounts info
     const accountsInfo = await this.$store.dispatch('wallet/REST_FETCH_INFOS',this.addressesList)
     if (!accountsInfo) return
@@ -191,6 +194,7 @@ export default class GenerateWalletTs extends Vue {
       WalletService.DEFAULT_WALLET_PATH,
       addressNum,
     )
+    console.info(this.addressesList,'this.addressesList')
   }
 
   public submit() {
@@ -201,9 +205,21 @@ export default class GenerateWalletTs extends Vue {
       )
     }
     try {
+      // set networkType
+      this.currentAccount.values.set('networkType', this.networkType)
+      // set seed 
+      const entropy = CryptoJS.SHA256(this.currentMnemonic.plain).toString()
+      const seed = MnemonicPassPhrase.createFromEntropy(entropy)
+      // encrypt seed for storage
+      const encSeed = AESEncryptionService.encrypt(
+        seed.toSeed(this.currentPassword.value).toString('hex'),
+        this.currentPassword,
+      )
+      // update currentAccount instance and storage
+      this.currentAccount.values.set('seed', encSeed)
       // create wallet models
       const wallets = this.createWalletsFromPathIndexes(this.selectedWallets)
-      
+      console.info(wallets,'wallets')
       // save newly created wallets
       wallets.forEach((wallet, index) => {
         // Store wallets using repository
@@ -223,10 +239,7 @@ export default class GenerateWalletTs extends Vue {
       // add wallets to account
       this.currentAccount.values.set('wallets', walletIdentifiers)
       // store account using repository
-      this.accountsRepository.update(
-        this.currentAccount.getIdentifier(),
-        this.currentAccount.values,
-      )
+      this.accountsRepository.create(this.currentAccount.values)
 
       // execute store actions
       this.$store.dispatch('temporary/RESET_STATE')
