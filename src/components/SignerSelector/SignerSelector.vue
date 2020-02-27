@@ -1,14 +1,14 @@
 <template>
-  <FormRow class-name="emphasis from">
+  <FormRow class-name="emphasis">
     <template v-slot:label>
-      FROM
+      {{ $t('sender') }}:
     </template>
     <template v-slot:inputs>
       <div class="inputs-container select-container">
         <select
           v-model="chosenSigner"
           :placeholder="$t('publicKey')"
-          class="select-size select-style from-style"
+          class="select-size select-style"
         >
           <option
             v-for="item in signers"

@@ -1,7 +1,7 @@
 <template>
-  <FormRow class-name="emphasis from">
+  <FormRow class-name="emphasis">
     <template v-slot:label>
-      TO
+      {{ $t('transfer_target') }}:
     </template>
     <template v-slot:inputs>
       <ValidationProvider
@@ -17,7 +17,7 @@
           <input
             v-model="rawValue"
             v-focus
-            class="input-size input-style to-style"
+            class="input-size input-style"
             :placeholder="$t('placeholder_address_or_alias')"
             type="text"
           >

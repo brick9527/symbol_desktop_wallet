@@ -95,8 +95,6 @@
   "receipt": "Receipt",
   "remote": "Harvested Blocks",
   "mosaic": "Mosaic",
-  "partial": "Mount transaction",
-  "transactions_history": "Transactions history",
   "assets": "Assets",
   "namespace": "Namespace",
   "validity_period": "Validity",

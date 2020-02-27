@@ -28,8 +28,7 @@ import FormTransferTransaction from '@/views/forms/FormTransferTransaction/FormT
 // resources
 // @ts-ignore
 import failureIcon from '@/views/resources/img/monitor/failure.png'
-// @ts-ignore
-import RecipientInput from '@/components/RecipientInput/RecipientInput.vue'
+
 // @TODO: to move out
 /**
  * Mosaic object to be displayed in the views
@@ -61,7 +60,7 @@ export interface BalanceEntry {
 
 @Component({
   components: {
-    FormTransferTransaction,RecipientInput,
+    FormTransferTransaction,
   },
   computed: {...mapGetters({
     networkType: 'network/networkType',
@@ -141,6 +140,7 @@ export class DashboardInvoicePageTs extends Vue {
 
     try {
       return QRCodeGenerator.createTransactionRequest(
+        // @ts-ignore // @TODO SDK upgrade
         transfer,
         this.networkType,
         this.generationHash,
