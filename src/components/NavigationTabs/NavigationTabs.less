@@ -22,9 +22,8 @@
   grid-auto-flow: column;
   justify-items: start;
   justify-content: start;
-  height: 115%;
+  height: 100%;
   background-color: white;
-  border-bottom: 2px solid @grayLight;
 
   .tab-item {
     font-size: 0.2rem;
@@ -34,25 +33,25 @@
     height: 100%;
     width: auto;
     padding: 0 0.4rem;
-    line-height: 0.72rem;
-    color:rgba(102,102,102,1);
+    line-height: 0.5rem;
   }
 
   .active {
-    color:rgba(68,0,78,1);
+    color: @primary;
     font-weight: 700;
     cursor: not-allowed !important;
   }
 
-  .tab-item:after {
+  .active:after {
     display: block;
     position: absolute;
-    width: 0.02rem;
-    height: 0.2rem;
-    background: @grayLight;
+    width: 0.3rem;
+    height: 0.04rem;
+    background: @primary;
     content: "";
-    right: 0;
-    bottom: 0.25rem;
+    left: -0.15rem;
+    margin-left: 50%;
+    bottom: 0;
   }
 }
 
