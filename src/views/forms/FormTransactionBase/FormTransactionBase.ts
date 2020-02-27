@@ -41,6 +41,7 @@ import {NotificationType} from '@/core/utils/NotificationType'
 import {WalletService} from '@/services/WalletService'
 import {TransactionService} from '@/services/TransactionService'
 import {BroadcastResult} from '@/core/transactions/BroadcastResult'
+import {ValidationObserver} from 'vee-validate'
 
 @Component({
   computed: {...mapGetters({
@@ -137,6 +138,23 @@ export class FormTransactionBase extends Vue {
    * @var {any}
    */
   public namespacesNames: any
+
+  /**
+   * Public key of the current signer
+   * @var {any}
+   */
+  public currentSigner: PublicAccount
+
+  /**
+   * Type the ValidationObserver refs 
+   * @type {{
+   *     observer: InstanceType<typeof ValidationObserver>
+   *   }}
+   */
+  public $refs!: {
+    observer: InstanceType<typeof ValidationObserver>
+  }
+
 /// end-region store getters
 
 /// region property watches
@@ -169,6 +187,7 @@ export class FormTransactionBase extends Vue {
    */
   public async mounted() {
     if (this.currentWallet) {
+      this.currentSigner = this.currentWallet.objects.publicAccount
       const address = this.currentWallet.objects.address.plain()
       try { this.$store.dispatch('wallet/REST_FETCH_OWNED_NAMESPACES', address) } catch(e) {}
     }
@@ -267,6 +286,8 @@ export class FormTransactionBase extends Vue {
    * @param {string} signerPublicKey 
    */
   public onChangeSigner(signerPublicKey: string) {
+    this.currentSigner = PublicAccount.createFromPublicKey(signerPublicKey, this.networkType)
+
     const isCosig = this.currentWallet.values.get('publicKey') !== signerPublicKey
     const payload = !isCosig ? this.currentWallet : {
       networkType: this.networkType,
@@ -305,6 +326,11 @@ export class FormTransactionBase extends Vue {
 
     // - open signature modal
     this.onShowConfirmationModal()
+
+    // resets form validation
+    this.$nextTick(() => {
+      this.$refs.observer.reset()
+    })
   }
 
   /**

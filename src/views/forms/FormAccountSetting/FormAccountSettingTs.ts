@@ -32,6 +32,7 @@ import { mapGetters } from 'vuex'
 // @ts-ignore
 import ButtonStep from '@/components/ButtonStep/ButtonStep.vue'
 
+import FormRow from '@/components/FormRow/FormRow.vue'
 
 /// region custom types
 type NetworkNodeEntry = {value: NetworkType, label: string}
@@ -43,10 +44,12 @@ type NetworkNodeEntry = {value: NetworkType, label: string}
     ValidationProvider,
     ErrorTooltip,
     FormWrapper,
+    FormRow,
     FormLabel,
     ButtonStep,
   },
   computed: {...mapGetters({
+    networkType: 'network/networkType',
     generationHash: 'network/generationHash',
     currentAccount: 'account/currentAccount',
   })},
@@ -62,7 +65,13 @@ export class FormAccountSettingTs extends Vue {
   /** 
    * Currently active network type
    * @see {Store.Network}
-   * @var {string}
+   * @var {NetworkType}
+   */
+  public networkType: NetworkType
+
+  /**
+   * Accounts repository
+   * @var {AccountsRepository}
    */
   public generationHash: string
 
@@ -82,6 +91,29 @@ export class FormAccountSettingTs extends Vue {
     passwordAgain: '',
     hint: '',
   }
+
+  /**
+   * Network types
+   * @var {NetworkNodeEntry[]}
+   */
+  public networkTypeList: NetworkNodeEntry[] = [
+    {value: NetworkType.MIJIN_TEST, label: 'MIJIN_TEST'},
+    {value: NetworkType.MAIN_NET, label: 'MAIN_NET'},
+    {value: NetworkType.TEST_NET, label: 'TEST_NET'},
+    {value: NetworkType.MIJIN, label: 'MIJIN'},
+  ]
+
+  /**
+   * Type the ValidationObserver refs 
+   * @type {{
+    *     observer: InstanceType<typeof ValidationObserver>
+    *   }}
+    */
+  public $refs!: {
+    observer: InstanceType<typeof ValidationObserver>
+  }
+
+/// region computed properties getter/setter
   get nextPage() {
     return this.$route.meta.nextPage
   }
@@ -94,6 +126,10 @@ export class FormAccountSettingTs extends Vue {
   public submit() {
     // @VEE
     this.persistAccountAndContinue()
+    // resets form validation
+    this.$nextTick(() => {
+      this.$refs.observer.reset()
+    })
   }
 
   /**
@@ -107,12 +143,13 @@ export class FormAccountSettingTs extends Vue {
     
     // - populate model
     const model = new AccountsModel(new Map<string, any>([
-      [ 'accountName', this.formItems.accountName ],
-      [ 'wallets', [] ],
-      [ 'password', passwordHash ],
-      [ 'hint', this.formItems.hint ],
-      [ 'seed', '' ],
-      [ 'generationHash', this.generationHash ],
+      ['accountName', this.formItems.accountName],
+      ['wallets', []],
+      ['password', passwordHash],
+      ['hint', this.formItems.hint],
+      ['networkType', this.networkType],
+      ['seed', ''],
+      ['generationHash', this.generationHash]
     ]))
     this.$store.dispatch('temporary/SET_PASSWORD', this.formItems.password)
     this.$store.dispatch('temporary/SET_ACCOUNT',model)

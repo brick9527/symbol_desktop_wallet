@@ -18,13 +18,40 @@ import {Component, Vue, Prop} from 'vue-property-decorator'
 // internal dependencies
 import {WalletsModel} from '@/core/database/entities/WalletsModel'
 
-@Component
+// child components
+// @ts-ignore
+import ModalFormAccountUnlock from '@/views/modals/ModalFormAccountUnlock/ModalFormAccountUnlock.vue'
+// @ts-ignore
+import ProtectedMnemonicQRButton from '@/components/ProtectedMnemonicQRButton/ProtectedMnemonicQRButton.vue'
+// @ts-ignore
+import ProtectedMnemonicDisplayButton from '@/components/ProtectedMnemonicDisplayButton/ProtectedMnemonicDisplayButton.vue'
+
+@Component({
+  components: {
+    ModalFormAccountUnlock,
+    ProtectedMnemonicQRButton,
+    ProtectedMnemonicDisplayButton,
+  }})
 export class WalletBackupOptionsTs extends Vue {
 
   @Prop({
     default: null
   }) wallet: WalletsModel
 
+  /**
+   * Whether account is currently being unlocked
+   * @var {boolean}
+   */
+  public isUnlockingAccount: boolean = false
+
 /// region computed properties getter/setter
+  public get hasAccountUnlockModal(): boolean {
+    return this.isUnlockingAccount
+  }
+
+  public set hasAccountUnlockModal(f: boolean) {
+    this.isUnlockingAccount = f
+  }
 /// end-region computed properties getter/setter
+
 }

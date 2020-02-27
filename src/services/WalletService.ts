@@ -82,6 +82,7 @@ export class WalletService extends AbstractService {
     identifier: string 
   ): WalletsModel {
     try {
+      this.wallets.fetch()
       const wallet = this.wallets.read(identifier)
       return wallet
     }
@@ -191,12 +192,12 @@ export class WalletService extends AbstractService {
     // increment derivation path \a count times
     let current = startPath
     const paths = [...Array(count).keys()].map(
-      index => count === 0 ? current : (current = helpers.incrementPathLevel(current, DerivationPathLevels.Address))
+      index => count === 0 ? current : (current = helpers.incrementPathLevel(current, DerivationPathLevels.Account))
     )
 
     const wallets = paths.map(path => new Wallet(xkey.derivePath(path)))
     // @ts-ignore // @TODO: SDK Upgrade
-    return wallets.map(wallet => wallet.getAccount())
+    return wallets.map(wallet => wallet.getAccount(networkType))
   }
 
   /**
@@ -215,7 +216,7 @@ export class WalletService extends AbstractService {
     const xkey = this.getExtendedKeyFromMnemonic(mnemonic, networkType)
     const wallets = paths.map(path => new Wallet(xkey.derivePath(path)))
     // @ts-ignore
-    return wallets.map(wallet => wallet.getAccount())
+    return wallets.map(wallet => wallet.getAccount(networkType))
   }
 
   /**

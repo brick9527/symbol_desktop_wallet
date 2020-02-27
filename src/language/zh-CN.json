@@ -1024,5 +1024,6 @@
   "verify_mnemonic": "验证备份的助记词",
   "verify_mnemonic_tip_description_1": "助记词如果备份错误，将可能不能找回，请认真核对单词和顺序",
   "Password_hint": "密码提示",
-  "mnemonic_hash_code": "助记词Hash码"
+  "mnemonic_hash_code": "助记词Hash码",
+  "removal_greater_than_cosignatories": "最小删除所需余弦比可用余弦多{delta}。请添加余弦或减少最小删除数。"
 }

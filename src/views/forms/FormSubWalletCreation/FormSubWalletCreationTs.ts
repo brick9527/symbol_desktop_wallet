@@ -128,6 +128,16 @@ export class FormSubWalletCreationTs extends Vue {
     name: '',
   }
 
+  /**
+   * Type the ValidationObserver refs 
+   * @type {{
+    *     observer: InstanceType<typeof ValidationObserver>
+    *   }}
+    */
+  public $refs!: {
+    observer: InstanceType<typeof ValidationObserver>
+  }
+ 
   public created() {
     this.wallets = new WalletService(this.$store)
     this.paths = new DerivationService(this.$store)
@@ -171,6 +181,11 @@ export class FormSubWalletCreationTs extends Vue {
    */
   public onSubmit() {
     this.hasAccountUnlockModal = true
+
+    // resets form validation
+    this.$nextTick(() => {
+      this.$refs.observer.reset()
+    })
   }
 
   /**
@@ -209,13 +224,16 @@ export class FormSubWalletCreationTs extends Vue {
       this.currentPassword = null
 
       // - use repositories for storage
-      this.walletsRepository.create(subWallet.values)
+      const walletsRepo = new WalletsRepository()
+      walletsRepo.create(subWallet.values)
 
       // - also add wallet to account (in storage)
       const wallets = this.currentAccount.values.get("wallets")
       wallets.push(subWallet.getIdentifier())
       this.currentAccount.values.set("wallets", wallets)
-      this.accountsRepository.update(
+
+      const accountsRepo = new AccountsRepository()
+      accountsRepo.update(
         this.currentAccount.getIdentifier(),
         this.currentAccount.values
       )
@@ -244,7 +262,7 @@ export class FormSubWalletCreationTs extends Vue {
 
     // - increment last path
     const lastPath = knownPaths.pop()
-    const nextPath = this.paths.incrementPathLevel(lastPath, DerivationPathLevels.Address, 1)
+    const nextPath = this.paths.incrementPathLevel(lastPath, DerivationPathLevels.Account, 1)
 
     this.$store.dispatch('diagnostic/ADD_DEBUG', 'Adding child wallet with derivation path: ' + nextPath)
 
