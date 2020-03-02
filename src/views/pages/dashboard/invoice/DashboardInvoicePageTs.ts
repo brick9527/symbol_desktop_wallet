@@ -182,4 +182,9 @@ export class DashboardInvoicePageTs extends Vue {
     // - start download
     a.dispatchEvent(event)
   }
+
+  /**
+   * QR message
+   */
+  qrMessage: string
 }
