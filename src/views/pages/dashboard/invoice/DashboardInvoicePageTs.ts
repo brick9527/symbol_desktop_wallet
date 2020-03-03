@@ -48,7 +48,7 @@ import SignerSelectorDisplay from '@/components/SignerSelectorDisplay/SignerSele
 
 // resources
 // @ts-ignore
-import failureIcon from '@/views/resources/img/monitor/failure.png'
+import failureIcon from '@/views/resources/img/monitor/qr_failure.png'
 
 // @TODO: to move out
 /**
