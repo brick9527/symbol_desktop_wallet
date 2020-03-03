@@ -5,7 +5,7 @@
         <Icon type="ios-refresh" />
         <span>重置</span>
       </div>
-      <div class="header-button-group">
+      <div class="header-button-group" @click="onDownloadQR">
         <Icon type="md-download" />
         <span>下载</span>
       </div>
@@ -24,54 +24,34 @@
             <span class="top-qr-text-title">{{ $t('Recipient') }}:</span>
           </div>
 
-          <div class="address-value-box">
-            <span class="gray">{{ recipient }}</span>
+          <div class="address-value-box qr-value-box">
+            <SignerSelectorDisplay v-model="formItems.signerPublicKey" :signers="signers" @change="onChangeSigner" />
           </div>
 
           <div class="top-qr-text overflow_ellipsis">
             <span class="top-qr-text-title">{{ $t('assets') }}:</span>
           </div>
 
-          <div class="qr-asset-value-box">
-            <div v-if="balanceEntries.length">
-              <div 
-                v-for="({mosaicHex, name, amount}, index) in balanceEntries"
-                :key="index"
-              >
-                <span class="blue">{{ amount }}&nbsp;</span>
-                <span class="blue">{{ name }}</span>
-                <span class="gray">（{{ mosaicHex }}）</span>
-              </div>
-            </div>
-            <span v-else>{{ 'N/A' }}</span>
+          <div class="qr-asset-value-box qr-value-box">
+            <MosaicSelectorDisplay :mosaics="currentWalletMosaics" @input="getSelectedMosaicInfo" />
           </div>
 
           <div class="top-qr-text overflow_ellipsis">
             <span class="top-qr-text-title">设置金额:</span>
           </div>
 
-          <div class="qr-amount-value-box">
-
+          <div class="qr-amount-value-box qr-value-box">
+            <EditableSpan />
           </div>
 
           <div class="top-qr-text">
-            <span class="top-qr-text-title">{{ $t('message') }}:</span>
+            <span class="top-qr-text-title top-text">{{ $t('message') }}:</span>
           </div>
-          <div class="qr-message-value-box">
-            <Input v-model="qrMessage" type="textarea" :rows="2" />
+          <div class="qr-message-value-box qr-value-box">
+            <QRMessageInput />
           </div>
-
-          <!-- <div class="qr_button">
-            <span class="radius pointer" @click="onDownloadQR">{{ $t('Download') }}</span>
-          </div> -->
         </div>
       </div>
-
-      <!-- <FormTransferTransaction
-        :hide-signer="true"
-        :disable-submit="true"
-        @onTransactionsChange="onInvoiceChange"
-      /> -->
     </div>
   </div>
 </template>

@@ -35,7 +35,7 @@
       margin-left: 0.6rem;
 
       i {
-        font-size: 0.18rem;
+        font-size: @smallFont;
         padding: 0rem 0.05rem;
       }
     }
@@ -53,13 +53,14 @@
     position: relative;
     padding-left: 0.5rem;
     padding-top: 0.8rem;
+    padding-right: 2rem;
 
     .invoice-section-container {
       width: 100%;
       height: auto;
       display: grid;
       grid-template-rows: 100%;
-      grid-template-columns: 2.2rem auto;
+      grid-template-columns: 2.5rem auto;
       margin-bottom: 0.3rem;
       column-gap: 0.4rem;
 
@@ -74,11 +75,19 @@
         height: 100%;
         display: grid;
         grid-template-columns: 1fr 5fr;
-        grid-template-rows: 1fr 1fr 1fr 2fr;
+        grid-template-rows: 1fr 1fr 1fr auto;
         column-gap: 0.15rem;
+        row-gap: 0.1rem;
+        justify-content: center;
+        align-items: center;
 
         .top-qr-text {
           justify-self: end;
+          font-size: @smallerFont;
+
+          .top-text {
+            align-self: start;
+          }
         }
       }
     }
