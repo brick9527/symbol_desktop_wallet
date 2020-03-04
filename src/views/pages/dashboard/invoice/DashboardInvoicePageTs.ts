@@ -152,6 +152,7 @@ export class DashboardInvoicePageTs extends Vue {
     attachedMosaics: [],
     signerPublicKey: '',
     mosaicHex: '',
+    message: '',
   }
 
   /**
@@ -268,11 +269,6 @@ export class DashboardInvoicePageTs extends Vue {
     a.dispatchEvent(event)
   }
 
-  /**
-   * QR message
-   */
-  qrMessage: string
-
   /// region computed properties getter/setter
   get signers(): {publicKey: string, label: string}[] {
     return this.getSigners()
@@ -368,8 +364,12 @@ export class DashboardInvoicePageTs extends Vue {
     await this.$store.dispatch('wallet/SET_CURRENT_SIGNER', {model: payload})
   }
 
-  getSelectedMosaicInfo(mosaicHex: string) {
-    this.formItems.mosaicHex = mosaicHex
-    
+
+  get selectedMosaic(): string {
+    return this.formItems.mosaicHex
+  }
+
+  set selectedMosaic(hex: string) {
+    this.formItems.mosaicHex = hex
   }
 }
