@@ -1,7 +1,7 @@
 <template>
   <div class="invoice-container secondary_page_animate">
     <div class="invoice-header-container">
-      <div class="header-button-group">
+      <div class="header-button-group" @click="reset">
         <Icon type="ios-refresh" />
         <span>{{ $t('reset') }}</span>
       </div>
@@ -25,7 +25,7 @@
           </div>
 
           <div class="address-value-box qr-value-box">
-            <SignerSelectorDisplay v-model="formItems.signerPublicKey" :signers="signers" @change="onChangeSigner" />
+            <SignerSelectorDisplay :value="formItems.signerPublicKey" :signers="signers" @change="onChangeSigner" />
           </div>
 
           <div class="top-qr-text overflow_ellipsis">
@@ -33,7 +33,10 @@
           </div>
 
           <div class="qr-asset-value-box qr-value-box">
-            <MosaicSelectorDisplay v-model="selectedMosaic" :mosaics="currentWalletMosaics" />
+            <MosaicSelectorDisplay 
+              :value="selectedMosaic" :mosaics="currentWalletMosaics" :default-mosaic="'networkMosaic'" 
+              @input="changeMosaic"
+            />
           </div>
 
           <div class="top-qr-text overflow_ellipsis">
@@ -41,14 +44,14 @@
           </div>
 
           <div class="qr-amount-value-box qr-value-box">
-            <EditableSpan />
+            <EditableSpan :amount="formItems.amount" @change-value="changeAmount" />
           </div>
 
           <div class="top-qr-text">
             <span class="top-qr-text-title top-text">{{ $t('message') }}:</span>
           </div>
           <div class="qr-message-value-box qr-value-box">
-            <QRMessageInput v-model="formItems.message" />
+            <QRMessageInput :value="formItems.message" @change-message="changeMessage" />
           </div>
         </div>
       </div>
