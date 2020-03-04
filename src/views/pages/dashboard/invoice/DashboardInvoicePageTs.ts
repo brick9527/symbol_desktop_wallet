@@ -30,6 +30,9 @@ import {
   NamespaceId,
   MultisigAccountInfo,
   PublicAccount,
+  Deadline,
+  UInt64,
+  PlainMessage,
 } from 'nem2-sdk'
 import {WalletsModel} from '@/core/database/entities/WalletsModel'
 import {WalletService} from '@/services/WalletService'
@@ -149,9 +152,10 @@ export class DashboardInvoicePageTs extends Vue {
    * @var {any}
    */
   public formItems = {
-    attachedMosaics: [],
     signerPublicKey: '',
     mosaicHex: '',
+    message: '',
+    amount: 0,
   }
 
   /**
@@ -221,7 +225,7 @@ export class DashboardInvoicePageTs extends Vue {
 
     // - read TransferTransaction instance
     const transfer = this.transactions.shift() as TransferTransaction
-    console.log("invoice transfer: ", transfer)
+    console.log('invoice transfer: ', transfer)
 
     try {
       return QRCodeGenerator.createTransactionRequest(
@@ -268,11 +272,6 @@ export class DashboardInvoicePageTs extends Vue {
     a.dispatchEvent(event)
   }
 
-  /**
-   * QR message
-   */
-  qrMessage: string
-
   /// region computed properties getter/setter
   get signers(): {publicKey: string, label: string}[] {
     return this.getSigners()
@@ -296,7 +295,7 @@ export class DashboardInvoicePageTs extends Vue {
           id: mosaic.id as MosaicId, // XXX resolve mosaicId from namespaceId
           mosaicHex: mosaic.id.toHex(), // XXX resolve mosaicId from namespaceId
           name: this.getMosaicName(mosaic.id),
-          amount: mosaic.amount.compact() / Math.pow(10, div)
+          amount: mosaic.amount.compact() / Math.pow(10, div),
         }
       })
   }
@@ -306,7 +305,7 @@ export class DashboardInvoicePageTs extends Vue {
    * @param {Mosaic} mosaic 
    * @return {string}
    */
-  protected getMosaicName(mosaicId: MosaicId | NamespaceId): string {
+  protected getMosaicName(mosaicId: MosaicId | NamespaceId): string {
     if (this.mosaicsNames.hasOwnProperty(mosaicId.toHex())) {
       return this.mosaicsNames[mosaicId.toHex()]
     }
@@ -332,7 +331,12 @@ export class DashboardInvoicePageTs extends Vue {
     ]
 
     const multisigInfo = this.currentWalletMultisigInfo
-    if (!multisigInfo) return self
+    // if it is a single wallet, set the public key as the signer public key directly
+    if (!multisigInfo) {
+      this.formItems.signerPublicKey = self[0].publicKey
+      this.currentSigner = PublicAccount.createFromPublicKey(self[0].publicKey, this.networkType)
+      return self
+    }
 
     // in case "self" is a multi-signature account
     if (multisigInfo && multisigInfo.isMultisig()) {
@@ -366,10 +370,77 @@ export class DashboardInvoicePageTs extends Vue {
     }
 
     await this.$store.dispatch('wallet/SET_CURRENT_SIGNER', {model: payload})
+    this.generateQRCode()
   }
 
-  getSelectedMosaicInfo(mosaicHex: string) {
-    this.formItems.mosaicHex = mosaicHex
-    
+
+  get selectedMosaic(): string {
+    return this.formItems.mosaicHex
+  }
+
+  set selectedMosaic(hex: string) {
+    this.formItems.mosaicHex = hex
+  }
+
+  reset() {
+    this.formItems.signerPublicKey = ''
+    this.formItems.message = ''
+    this.formItems.amount = 0
+    this.transactions = []
+  }
+
+  /**
+   * change amount value
+   * @param {number} value - new amount value
+   */
+  changeAmount(value: string) {
+    this.formItems.amount = Number(value)
+    this.generateQRCode()
+  }
+
+  /**
+   * change mosaic choose
+   * @param {string} hex - new chosen mosaic hex
+   */
+  changeMosaic(hex: string) {
+    this.formItems.mosaicHex = hex
+    this.generateQRCode()
+  }
+
+  /**
+   * change message content
+   * @param {string} msg - new message value
+   */
+  changeMessage(msg: string) {
+    this.formItems.message = msg
+    this.generateQRCode()
+  }
+
+  /**
+   * generate QR code
+   */
+  generateQRCode() {
+    const transfer = TransferTransaction.create(
+      Deadline.create(),
+      Address.createFromRawAddress(this.currentWallet.values.get('address')),
+      [new Mosaic(new MosaicId(this.formItems.mosaicHex), UInt64.fromUint(this.formItems.amount))],
+      PlainMessage.create(this.formItems.message),
+      this.networkType,
+    )
+    this.transactions.push(transfer)
+  }
+
+  /**
+   * finish copying event handler
+   */
+  onCopy() {
+    this.$Message.success('内容已复制到剪切板！')
+  }
+
+  /**
+   * copy error event handler
+   */
+  onError() {
+    this.$Message.error('复制失败')
   }
 }

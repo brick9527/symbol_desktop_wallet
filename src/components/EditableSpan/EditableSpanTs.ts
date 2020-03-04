@@ -17,12 +17,15 @@ import {Component, Vue, Prop} from 'vue-property-decorator'
 
 @Component
 export class EditableSpanTs extends Vue {
-  amount: number = 0
   showInput: boolean = false
 
+  @Prop({
+    default: 0,
+  })
+  amount
+
   set value(value: string) {
-    this.amount = Number(value)
-    this.$emit('set-value', value)
+    this.$emit('change-value', Number(value))
   }
 
   get value() {

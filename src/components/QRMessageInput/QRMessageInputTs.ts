@@ -42,13 +42,14 @@ export class QRMessageInputTs extends Vue {
    */
   public validationRules = ValidationRuleset
 
-/// region computed properties getter/setter
+
+  /// region computed properties getter/setter
   get plain(): string {
     return this.value
   }
 
   set plain(msg: string) {
-    this.$emit('input', msg)
+    this.$emit('change-message', msg)
   }
-/// end-region computed properties getter/setter
+  /// end-region computed properties getter/setter
 }

@@ -2,7 +2,8 @@
   <div class="editable-span-wrapper">
     <div v-show="showInput" class="input-box">
       <Input
-        ref="valueInput" v-model="value" type="number"
+        ref="valueInput" v-model="value"
+        type="number"
         @on-blur="showInput = false"
       />
     </div>
