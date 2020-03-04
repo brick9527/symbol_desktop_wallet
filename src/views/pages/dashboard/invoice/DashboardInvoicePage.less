@@ -20,36 +20,80 @@
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-rows: 100%;
+  grid-template-rows: 0.2rem 1fr;
   grid-template-columns: 100%;
-  background-color: white;
+  background-color: @white;
+  padding: 0.3rem 0.4rem;
+
+  .invoice-header-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    .header-button-group {
+      color: @grayDark;
+      margin-left: 0.6rem;
+
+      i {
+        font-size: @smallFont;
+        padding: 0rem 0.05rem;
+      }
+    }
+
+    .header-button-group:hover {
+      cursor: pointer;
+      color: @selectedValue;
+    }
+  }
 
   .invoice-inner-container {
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color: @white;
     position: relative;
     padding-left: 0.5rem;
+    padding-top: 0.8rem;
+    padding-right: 2rem;
 
     .invoice-section-container {
       width: 100%;
       height: auto;
       display: grid;
       grid-template-rows: 100%;
-      grid-template-columns: 2.2rem auto;
+      grid-template-columns: 2.5rem auto;
       margin-bottom: 0.3rem;
+      column-gap: 0.4rem;
 
       .image-container {
         width: 100%;
         height: 100%;
         text-align: center;
+
+        #qrImg {
+          width: 100%;
+          height: 100%;
+        }
       }
 
       .description-container {
         width: 100%;
         height: 100%;
-        padding-left: 0.4rem;
-        padding-top: 0.2rem;
+        display: grid;
+        grid-template-columns: 1fr 5fr;
+        grid-template-rows: 1fr 1fr 1fr auto;
+        column-gap: 0.15rem;
+        row-gap: 0.1rem;
+        justify-content: center;
+        align-items: center;
+
+        .top-qr-text {
+          justify-self: end;
+          font-size: @smallerFont;
+
+          .top-text {
+            align-self: start;
+          }
+        }
       }
     }
 
@@ -77,7 +121,7 @@
       justify-content: space-around;
 
       span {
-        color: white;
+        color: @white;
         line-height: 40px;
         text-align: center;
         font-size: 16px;
