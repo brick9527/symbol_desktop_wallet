@@ -5,11 +5,11 @@
       :key="index"
       :index="index"
       :mosaics="mosaics"
-      :is-first-row="item === 1"
+      :is-first-row="index === 0"
       @delete="onDeleteMosaic"
       @update-date="updateDate"
     />
-    <div v-if="mosaics.length > 0 && listNumber < mosaics.length" class="append-item-button-container">
+    <div v-if="mosaics.length > 0 && rowList.length < mosaics.length" class="append-item-button-container">
       <span class="append-button" @click="addRow">
         {{ $t('add_mosaic') }}
       </span>

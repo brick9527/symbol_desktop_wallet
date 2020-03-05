@@ -114,6 +114,10 @@ export class MosaicAttachmentInputTs extends Vue {
     this.selectedMosaic = hex
   }
 
+  public onChangeAmount(amount: number) {
+    this.relativeAmount = amount
+  }
+
   public onClickAdd() {
     if (!this.canClickAdd) return
 

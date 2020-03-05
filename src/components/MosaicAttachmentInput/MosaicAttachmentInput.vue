@@ -10,13 +10,14 @@
         tag="div"
       >
         <MosaicSelector
-          :bind="selectedMosaic"
+          :value="selectedMosaic"
           :mosaics="mosaics"
           @input="onChangeMosaic"
         />
         <AmountInput
-          v-model="relativeAmount"
+          :value="relativeAmount"
           class="pl-2 pr-2"
+          @input="onChangeAmount"
         />
         <ButtonAdd
           :disabled="!canClickAdd"

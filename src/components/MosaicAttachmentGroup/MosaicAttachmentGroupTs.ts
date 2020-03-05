@@ -28,7 +28,7 @@ type IUpdateData = {
 }
 
 type IMosaicList = {
-  id: number
+  // id: number
   hex: string
   amount: number
 }
@@ -41,10 +41,9 @@ type IMosaicList = {
 export class MosaicAttachmentGroupTs extends Vue {
   @Prop() mosaics: Mosaic[]
 
-  listNumber: number = 0
 
   rowList: IMosaicList[] = [
-    {id: this.listNumber, hex: '', amount: 0},
+    {hex: '', amount: 0},
   ]
 
   /**
@@ -53,9 +52,8 @@ export class MosaicAttachmentGroupTs extends Vue {
    * @return {void}
    */
   public onDeleteMosaic(id: number) {
-    console.log(id)
-    --this.listNumber
-    this.rowList.splice(id - 1, 1)
+    
+    this.rowList.splice(id, 1)
     // const updatedAttachedMosaics = [...this.formItems.attachedMosaics]
     //   .filter(({mosaicHex}) => mosaicHex !== id.toHex())
 
@@ -64,8 +62,7 @@ export class MosaicAttachmentGroupTs extends Vue {
   }
 
   public addRow() {
-    ++ this.listNumber
-    this.rowList.push({id: this.listNumber, hex: '', amount: 0})
+    this.rowList.push({hex: '', amount: 0})
   }
 
   // public updateDate(data: IUpdateData) {}
