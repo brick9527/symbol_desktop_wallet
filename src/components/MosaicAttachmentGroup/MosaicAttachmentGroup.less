@@ -1,0 +1,25 @@
+@import '../../views/resources/css/variables.less';
+
+.mosaic-attachment-group-wrapper {
+  max-height: 3rem;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  .form-row:nth-last-child(2) {
+    margin-bottom: 0;
+  }
+  .append-item-button-container {
+    text-align: right;
+
+    .append-button {
+      font-size: @normalFont;
+      color: @primary;
+      font-weight: @bold;
+      cursor: pointer;
+    }
+  }
+}
+
+.mosaic-attachment-group-wrapper::-webkit-scrollbar {
+  width: 0rem;
+}

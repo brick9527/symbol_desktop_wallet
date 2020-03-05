@@ -7,29 +7,38 @@
           @keyup.enter="disableSubmit ? '' : handleSubmit(onSubmit)"
         >
           <!-- Transaction signer selector -->
-          <SignerSelector v-if="!hideSigner"
-                          v-model="formItems.signerPublicKey"
-                          :signers="signers"
-                          @change="onChangeSigner" />
+          <SignerSelector
+            v-if="!hideSigner"
+            v-model="formItems.signerPublicKey"
+            :signers="signers"
+            @change="onChangeSigner"
+          />
 
           <!-- Transfer recipient input field -->
           <RecipientInput v-model="formItems.recipientRaw" />
 
           <!-- Mosaics attachments input fields -->
-          <MosaicAttachmentInput
+          <!-- <MosaicAttachmentInput
             v-model="formItems.attachedMosaics"
             :mosaics="currentWalletMosaics"
             :absolute="false"
             @add="onAddMosaic"
-          />
+          /> -->
 
           <!-- Display of attached mosaics -->
-          <MosaicAttachmentDisplay
+          <!-- <MosaicAttachmentDisplay
             v-model="formItems.attachedMosaics"
             :absolute="false"
             @delete="onDeleteMosaic"
-          />
-
+          /> -->
+          
+          <!-- <NewMosaicAttachmentInput
+            v-for="(item,index) in [ 1,2,3,4 ]" :key="index" :index="index" 
+            :mosaics="currentWalletMosaics"
+            :is-first-row="item === 1"
+            @delete="onDeleteMosaic"
+          /> -->
+          <MosaicAttachmentGroup :mosaics="currentWalletMosaics" @update-date="console.log('change')" />
           <!-- Transfer message input field -->
           <MessageInput v-model="formItems.messagePlain" />
 

@@ -59,6 +59,10 @@ import SignerSelector from '@/components/SignerSelector/SignerSelector.vue'
 import MaxFeeAndSubmit from '@/components/MaxFeeAndSubmit/MaxFeeAndSubmit.vue'
 // @ts-ignore
 import FormRow from '@/components/FormRow/FormRow.vue'
+// @ts-ignore
+import NewMosaicAttachmentInput from '@/components/NewMosaicAttachmentInput/NewMosaicAttachmentInput.vue'
+// @ts-ignore
+import MosaicAttachmentGroup from '@/components/MosaicAttachmentGroup/MosaicAttachmentGroup.vue'
 
 type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amount: number}
 
@@ -76,6 +80,8 @@ type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amou
     ValidationObserver,
     MaxFeeAndSubmit,
     FormRow,
+    NewMosaicAttachmentInput,
+    MosaicAttachmentGroup,
   },
 })
 export class FormTransferTransactionTs extends FormTransactionBase {
@@ -262,12 +268,13 @@ export class FormTransferTransactionTs extends FormTransactionBase {
    * the event 'delete'
    * @return {void}
    */
-  public onDeleteMosaic(id: MosaicId) {
-    const updatedAttachedMosaics = [...this.formItems.attachedMosaics]
-      .filter(({mosaicHex}) => mosaicHex !== id.toHex())
+  public onDeleteMosaic(id: number) {
+    console.log(id)
+    // const updatedAttachedMosaics = [...this.formItems.attachedMosaics]
+    //   .filter(({mosaicHex}) => mosaicHex !== id.toHex())
 
-    // fixes reactivity on attachedMosaics (observer resolution)
-    Vue.set(this.formItems, 'attachedMosaics', updatedAttachedMosaics)
+    // // fixes reactivity on attachedMosaics (observer resolution)
+    // Vue.set(this.formItems, 'attachedMosaics', updatedAttachedMosaics)
   }
 
   /**
