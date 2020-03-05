@@ -10,7 +10,7 @@
         tag="div"
       >
         <MosaicSelector
-          v-model="selectedMosaic"
+          :bind="selectedMosaic"
           :mosaics="mosaics"
           @input="onChangeMosaic"
         />
