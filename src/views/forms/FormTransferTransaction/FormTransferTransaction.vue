@@ -38,7 +38,7 @@
             :is-first-row="item === 1"
             @delete="onDeleteMosaic"
           /> -->
-          <MosaicAttachmentGroup :mosaics="currentWalletMosaics" @update-date="console.log('change')" />
+          <MosaicAttachmentGroup :mosaics="currentWalletMosaics" @update-date="onUpdateData" />
           <!-- Transfer message input field -->
           <MessageInput v-model="formItems.messagePlain" />
 

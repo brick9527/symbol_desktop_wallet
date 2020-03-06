@@ -7,7 +7,7 @@
       :mosaics="mosaics"
       :is-first-row="index === 0"
       @delete="onDeleteMosaic"
-      @update-date="updateDate"
+      @update-data="onUpdateDate"
     />
     <div v-if="mosaics.length > 0 && rowList.length < mosaics.length" class="append-item-button-container">
       <span class="append-button" @click="addRow">

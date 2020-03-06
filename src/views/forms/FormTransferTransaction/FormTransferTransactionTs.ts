@@ -64,7 +64,17 @@ import NewMosaicAttachmentInput from '@/components/NewMosaicAttachmentInput/NewM
 // @ts-ignore
 import MosaicAttachmentGroup from '@/components/MosaicAttachmentGroup/MosaicAttachmentGroup.vue'
 
-type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amount: number}
+// type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amount: number}
+
+export interface IMosaicAttachmentCore {
+  mosaicHex: string
+  amount: number
+}
+
+export interface MosaicAttachmentType extends IMosaicAttachmentCore {
+  id: MosaicId
+  name: string
+}
 
 @Component({
   components: {
@@ -87,29 +97,29 @@ type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amou
 export class FormTransferTransactionTs extends FormTransactionBase {
 /// region component properties
   @Prop({
-    default: null
+    default: null,
   }) signer: PublicAccount
 
   @Prop({
-    default: null
+    default: null,
   }) recipient: Address
 
   @Prop({
-    default: null
+    default: null,
   }) mosaics: Mosaic[]
 
   @Prop({
-    default: null
+    default: null,
   }) message: Message
 
   @Prop({
-    default: false
+    default: false,
   }) disableSubmit: boolean
 
   @Prop({
-    default: false
+    default: false,
   }) hideSigner: boolean
-/// end-region component properties
+  /// end-region component properties
 
   /**
    * Formatters helpers
@@ -129,7 +139,7 @@ export class FormTransferTransactionTs extends FormTransactionBase {
     selectedMosaicHex: '',
     relativeAmount: 0,
     messagePlain: '',
-    maxFee: 0
+    maxFee: 0,
   }
 
   /**
@@ -143,7 +153,7 @@ export class FormTransferTransactionTs extends FormTransactionBase {
       if (transfer === undefined) return
       this.setTransactions([transfer as TransferTransaction])
       this.isAwaitingSignature = true
-      return ;
+      return 
     }
 
     // - set default form values
@@ -179,10 +189,11 @@ export class FormTransferTransactionTs extends FormTransactionBase {
       const data: TransferFormFieldsType = {
         recipient: this.instantiatedRecipient,
         mosaics: this.attachedMosaics.map(
-          (spec: {mosaicHex: string, amount: number}): {mosaicHex: string, amount: number} => ({
+          (spec: IMosaicAttachmentCore): IMosaicAttachmentCore => ({
             mosaicHex: spec.mosaicHex,
-            amount: spec.amount // amount is relative
-          })),
+            amount: spec.amount, // amount is relative
+          }),
+        ),
         message: this.formItems.messagePlain,
         maxFee: UInt64.fromUint(this.formItems.maxFee),
       }
@@ -210,8 +221,8 @@ export class FormTransferTransactionTs extends FormTransactionBase {
 
     // - populate recipient
     this.formItems.recipientRaw = transaction.recipientAddress instanceof Address
-    ? transaction.recipientAddress.plain()
-    : (transaction.recipientAddress as NamespaceId).fullName
+      ? transaction.recipientAddress.plain()
+      : (transaction.recipientAddress as NamespaceId).fullName
     
     // - populate attached mosaics
     this.attachedMosaics = this.mosaicsToAttachments(transaction.mosaics)
@@ -223,7 +234,7 @@ export class FormTransferTransactionTs extends FormTransactionBase {
     this.formItems.maxFee = transaction.maxFee.compact()
   }
 
-/// region computed properties getter/setter
+  /// region computed properties getter/setter
   /**
    * Getter for attached mosaics
    * @return {MosaicAttachmentType[]}
@@ -261,47 +272,15 @@ export class FormTransferTransactionTs extends FormTransactionBase {
 
     return new NamespaceId(recipientRaw)
   }
-/// end-region computed properties getter/setter
+  /// end-region computed properties getter/setter
 
   /**
-   * Hook called when the child component MosaicAttachmentDisplay triggers
-   * the event 'delete'
-   * @return {void}
+   * Hook called when the child component MosaicAttachmentGroup triggers
+   * the event 'update-data'
+   * @param {IMosaicAttachmentCore[]} attachedMosaics - attached mosaics
    */
-  public onDeleteMosaic(id: number) {
-    console.log(id)
-    // const updatedAttachedMosaics = [...this.formItems.attachedMosaics]
-    //   .filter(({mosaicHex}) => mosaicHex !== id.toHex())
-
-    // // fixes reactivity on attachedMosaics (observer resolution)
-    // Vue.set(this.formItems, 'attachedMosaics', updatedAttachedMosaics)
-  }
-
-  /**
-   * Hook called when the child component ButtonAdd triggers
-   * the event 'click'
-   * @return {void}
-   */
-  public async onAddMosaic(formItems: {mosaicHex: string, amount: number}) {
-    // - update form data
-    const attachments = [].concat(...this.formItems.attachedMosaics)
-    const id = new MosaicId(RawUInt64.fromHex(formItems.mosaicHex))
-    const exists = attachments.findIndex(m => m.id.equals(id))
-    if (-1 !== exists) {
-      // - mosaic was already added, only increment amount
-      attachments[exists].amount += formItems.amount // amount is relative
-    }
-    else {
-      // - mosaic newly added
-      attachments.push({
-        id: id,
-        mosaicHex: formItems.mosaicHex,
-        name: this.getMosaicName(id),
-        amount: formItems.amount, // amount is relative
-      })
-    }
-
-    this.attachedMosaics = attachments
+  public onUpdateData(attachedMosaics: IMosaicAttachmentCore[]) {
+    this.formItems.attachedMosaics = attachedMosaics
   }
 
   /**
@@ -318,10 +297,10 @@ export class FormTransferTransactionTs extends FormTransactionBase {
         const div = info ? info.divisibility : 0
         // amount will be converted to RELATIVE
         return {
-          id: mosaic.id as MosaicId, //XXX resolve mosaicId from namespaceId
+          id: mosaic.id as MosaicId, // XXX resolve mosaicId from namespaceId
           mosaicHex: mosaic.id.toHex(), // XXX resolve mosaicId from namespaceId
           name: this.getMosaicName(mosaic.id),
-          amount: mosaic.amount.compact() / Math.pow(10, div)
+          amount: mosaic.amount.compact() / Math.pow(10, div),
         }
       })
   }

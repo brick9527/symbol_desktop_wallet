@@ -94,9 +94,9 @@ export class NewMosaicAttachmentInputTs extends Vue {
     this.$emit('delete', this.index)
   }
 
-  public updateAmount(amount: string) {
+  public updateAmount(amount: string) {    
     const mosaicAmount = Number(amount)
-    console.log(this.selectedMosaic, this.formItems.selectedMosaicHex)
+    this.relativeAmount = mosaicAmount
     this.$emit('update-data', {
       index: this.index,
       amount: mosaicAmount,

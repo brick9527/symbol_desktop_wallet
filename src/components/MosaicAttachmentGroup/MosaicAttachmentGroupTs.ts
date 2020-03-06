@@ -17,6 +17,7 @@ import {Component, Vue, Prop} from 'vue-property-decorator'
 import {
   Mosaic,
 } from 'nem2-sdk'
+import {IMosaicAttachmentCore} from '@/views/forms/FormTransferTransaction/FormTransferTransactionTs'
 
 // @ts-ignore
 import NewMosaicAttachmentInput from '@/components/NewMosaicAttachmentInput/NewMosaicAttachmentInput.vue'
@@ -28,10 +29,15 @@ type IUpdateData = {
 }
 
 type IMosaicList = {
-  // id: number
   hex: string
   amount: number
 }
+
+type IFinalData = {
+  amount: number
+}
+
+type IFinalDataRecord = Record<string, IFinalData>
 
 @Component({
   components: {
@@ -42,8 +48,8 @@ export class MosaicAttachmentGroupTs extends Vue {
   @Prop() mosaics: Mosaic[]
 
 
-  rowList: IMosaicList[] = [
-    {hex: '', amount: 0},
+  rowList: IMosaicAttachmentCore[] = [
+    {mosaicHex: '', amount: 0},
   ]
 
   /**
@@ -52,22 +58,46 @@ export class MosaicAttachmentGroupTs extends Vue {
    * @return {void}
    */
   public onDeleteMosaic(id: number) {
-    
     this.rowList.splice(id, 1)
-    // const updatedAttachedMosaics = [...this.formItems.attachedMosaics]
-    //   .filter(({mosaicHex}) => mosaicHex !== id.toHex())
-
-    // // fixes reactivity on attachedMosaics (observer resolution)
-    // Vue.set(this.formItems, 'attachedMosaics', updatedAttachedMosaics)
+    this.$emit('update-data', this.finalData)
   }
 
   public addRow() {
-    this.rowList.push({hex: '', amount: 0})
+    this.rowList.push({mosaicHex: '', amount: 0})
   }
 
-  // public updateDate(data: IUpdateData) {}
-  updateDate() {
-    console.log('update')
+  /**
+   * Hook called when the child component NewMosaicAttachmentInput triggers
+   * the event 'delete'
+   * @param {IUpdateData} data 
+   */
+  public onUpdateDate(data: IUpdateData) {
+    const { index, hex, amount } = data
+    this.rowList[index].mosaicHex = hex ? hex : this.rowList[index].mosaicHex
+    this.rowList[index].amount = amount || amount === 0 ? amount : this.rowList[index].amount    
+    this.$emit('update-data', this.finalData)
     
+  }
+
+  get finalData() {
+    const finalRow: IFinalDataRecord = {}
+    this.rowList.map((item: IMosaicAttachmentCore) => {
+      if (Object.keys(finalRow).includes(item.mosaicHex)) {
+        finalRow[item.mosaicHex].amount += item.amount
+      } else {
+        finalRow[item.mosaicHex] = {
+          amount: item.amount,
+        }
+      }
+    })
+
+    const mosaicAttachment: IMosaicAttachmentCore[] = []
+    for (const key in finalRow) {
+      mosaicAttachment.push({
+        mosaicHex: key,
+        amount: finalRow[key].amount,
+      })
+    }
+    return mosaicAttachment
   }
 }
