@@ -30,7 +30,9 @@ import {
   Mosaic,
   MosaicInfo,
   CosignatureSignedTransaction,
-} from 'nem2-sdk'
+  TransactionType,
+  UInt64,
+} from 'symbol-sdk'
 import {Subscription} from 'rxjs'
 
 // internal dependencies
@@ -502,8 +504,16 @@ export default {
       if (!which) which = 'currentWalletMosaics'
       dispatch('SET_BALANCES', {which, mosaics: []})
     },
-    SET_BALANCES({commit}, {mosaics, which}) {
-      commit(which, mosaics.length ? mosaics : [])
+    SET_BALANCES({commit, rootGetters}, {mosaics, which}) {
+      // if no mosaics, set the mosaics to 0 networkCurrency for reactivity purposes
+      if (!mosaics.length) {
+        const networkMosaic = rootGetters['mosaic/networkMosaic']
+        const defaultMosaic = new Mosaic(networkMosaic, UInt64.fromUint(0))
+        commit(which, [defaultMosaic])
+        return
+      }
+
+      commit(which, mosaics)
     },
     RESET_SUBSCRIPTIONS({commit}) {
       commit('setSubscriptions', [])
@@ -563,6 +573,7 @@ export default {
       return commit('transactionHashes', hashes)
     },
     REMOVE_TRANSACTION({commit, getters}, transactionMessage) {
+
       if (!transactionMessage || !transactionMessage.group) {
         throw Error('Missing mandatory field \'group\' for action wallet/removeTransaction.')
       }
@@ -578,17 +589,22 @@ export default {
       const transactionHash = transactionMessage.transaction
 
       // find transaction in storage
-      const findHashIt = hashes.find(hash => hash === transactionHash)
-      const findIterator = transactions.find(tx => tx.transactionInfo.hash === transactionHash)
+      const findIterator = transactions.findIndex(tx => tx.transactionInfo.hash === transactionHash)
       if (findIterator === undefined) {
         return ; // not found, do nothing
       }
 
-      // remove transaction
-      delete transactions[findIterator]
-      delete hashes[findHashIt]
-      commit(transactionGroup, transactions)
-      return commit('transactionHashes', hashes)
+      // commit empty array
+      if (transactions.length === 1) {
+        return commit(transactionGroup, [])
+      }
+
+      // skip `idx`
+      const remaining = transactions.splice(0, findIterator).concat(
+        transactions.splice(findIterator+1, transactions.length - findIterator - 1)
+      )
+
+      commit(transactionGroup, Array.from(remaining))
     },
     ADD_STAGED_TRANSACTION({commit}, stagedTransaction: Transaction) {
       commit('addStagedTransaction', stagedTransaction)
@@ -658,7 +674,7 @@ export default {
       try {
         // prepare REST parameters
         const currentPeer = rootGetters['network/currentPeer'].url
-        const queryParams = new QueryParams().setPageSize(pageSize).setId(id)
+        const queryParams = new QueryParams({ pageSize: 100, id })
         const addressObject = Address.createFromRawAddress(address)
 
         // fetch transactions from REST gateway
@@ -771,6 +787,10 @@ export default {
         // add accounts to the store
         accountsInfo.forEach(info => commit('addKnownWalletsInfo', info))
 
+        // if no current wallet address is available, skip and return accountsInfo
+        // (used in account import process)
+        if (!getters.currentWalletAddress) return accountsInfo
+
         // set current wallet info
         const currentWalletInfo = accountsInfo.find(
           info => info.address.equals(getters.currentWalletAddress),
@@ -826,10 +846,11 @@ export default {
         return false
       }
     },
-    async REST_FETCH_OWNED_MOSAICS({commit, dispatch, getters, rootGetters}, address) {
-      if (!address || address.length !== 40) {
-        return ;
-      }
+    async REST_FETCH_OWNED_MOSAICS(
+      {commit, dispatch, getters, rootGetters},
+      address,
+    ): Promise<MosaicInfo[]> {
+      if (!address || address.length !== 40) return
 
       dispatch('diagnostic/ADD_DEBUG', 'Store action wallet/REST_FETCH_OWNED_MOSAICS dispatched with : ' + address, {root: true})
 
@@ -866,7 +887,7 @@ export default {
         }
 
         dispatch('diagnostic/ADD_ERROR', 'An error happened while trying to fetch owned mosaics: ' + e, {root: true})
-        return false
+        return null
       }
     },
     async REST_FETCH_OWNED_NAMESPACES({commit, dispatch, getters, rootGetters}, address): Promise<NamespaceInfo[]> {
@@ -891,7 +912,7 @@ export default {
 
         // @TODO: Handle more than 100 namespaces
         const ownedNamespaces = await namespaceHttp.getNamespacesFromAccount(
-          addressObject, new QueryParams().setPageSize(100).setOrder(Order.ASC), 
+          addressObject, new QueryParams({pageSize: 100, order: Order.ASC}), 
         ).toPromise()
 
         // store multisig info
@@ -920,6 +941,7 @@ export default {
       {commit, dispatch, rootGetters},
       {issuer, signedLock, signedPartial}
     ): Promise<BroadcastResult> {
+
       if (!issuer || issuer.length !== 40) {
         return ;
       }
@@ -940,13 +962,14 @@ export default {
         const listener = new Listener(wsEndpoint, WebSocket)
         await listener.open()
 
+        
         // - announce hash lock transaction and await confirmation
         transactionHttp.announce(signedLock)
 
         // - listen for hash lock confirmation
         return new Promise((resolve, reject) => {
           const address = Address.createFromRawAddress(issuer)
-          return listener.confirmed(address, signedLock.hash).subscribe(
+          return listener.confirmed(address).subscribe(
             async (success) => {
               // - hash lock confirmed, now announce partial
               const response = await transactionHttp.announceAggregateBonded(signedPartial)
@@ -970,7 +993,6 @@ export default {
       {commit, dispatch, rootGetters},
       signedTransaction: SignedTransaction
     ): Promise<BroadcastResult> {
-
       dispatch('diagnostic/ADD_DEBUG', 'Store action wallet/REST_ANNOUNCE_TRANSACTION dispatched with: ' + JSON.stringify({
         hash: signedTransaction.hash,
         payload: signedTransaction.payload
@@ -981,7 +1003,7 @@ export default {
         const currentPeer = rootGetters['network/currentPeer'].url
         const transactionHttp = RESTService.create('TransactionHttp', currentPeer)
 
-        // prepare nem2-sdk TransactionService
+        // prepare symbol-sdk TransactionService
         const response = await transactionHttp.announce(signedTransaction)
         commit('removeSignedTransaction', signedTransaction)
         return new BroadcastResult(signedTransaction, true)
@@ -1007,7 +1029,7 @@ export default {
         const currentPeer = rootGetters['network/currentPeer'].url
         const transactionHttp = RESTService.create('TransactionHttp', currentPeer)
 
-        // prepare nem2-sdk TransactionService
+        // prepare symbol-sdk TransactionService
         const response = await transactionHttp.announceAggregateBondedCosignature(cosignature)
         return new BroadcastResult(cosignature, true)
       }

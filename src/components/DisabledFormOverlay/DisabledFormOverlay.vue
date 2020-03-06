@@ -8,9 +8,9 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator'
+import {Component, Vue, Prop} from 'vue-property-decorator'
 import {mapGetters} from 'vuex'
-import {MosaicId, MultisigAccountInfo} from 'nem2-sdk'
+import {MosaicId, MultisigAccountInfo} from 'symbol-sdk'
 import {NotificationType} from '@/core/utils/NotificationType'
 
 @Component({computed: {...mapGetters({
@@ -18,6 +18,12 @@ import {NotificationType} from '@/core/utils/NotificationType'
   currentWalletMultisigInfo: 'wallet/currentWalletMultisigInfo',
 })}})
 export default class DisabledFormOverlay extends Vue {
+  /**
+   * Overrides checks
+   * @type{boolean}
+   */
+  @Prop({ default: false }) whitelisted: boolean
+
   /**
    * Networks currency mosaic
    * @var {MosaicId}
@@ -31,7 +37,6 @@ export default class DisabledFormOverlay extends Vue {
   public currentWalletMultisigInfo: MultisigAccountInfo
 
 /// region computed properties getter/setter
-
   /**
    * Whether a form should be disabled to a multisig account
    * @returns {boolean}
@@ -55,6 +60,7 @@ export default class DisabledFormOverlay extends Vue {
    * @returns {string}
    */
   get alert(): string {
+    if (this.whitelisted) return ''
     if (!this.networkMosaic) return NotificationType.NO_NETWORK_CURRENCY
     if (this.disableToMultisig) {
       return NotificationType.MULTISIG_ACCOUNTS_NO_TX
