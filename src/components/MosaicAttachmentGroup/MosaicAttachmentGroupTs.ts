@@ -16,7 +16,7 @@
 import {Component, Vue, Prop} from 'vue-property-decorator'
 import {
   Mosaic,
-} from 'nem2-sdk'
+} from 'symbol-sdk'
 import {IMosaicAttachmentCore} from '@/views/forms/FormTransferTransaction/FormTransferTransactionTs'
 
 // @ts-ignore
