@@ -18,7 +18,7 @@ import {Component, Vue} from 'vue-property-decorator'
 import {mapGetters} from 'vuex'
 import {pluck, concatMap, debounceTime, map, mergeMap} from 'rxjs/operators'
 import {of, Observable} from 'rxjs'
-import {QRCodeGenerator, TransactionQR} from 'symbol-qr-library'
+import {QRCodeGenerator, TransactionQR} from 'nem2-qr-library'
 import {
   NetworkType,
   TransferTransaction,
@@ -33,7 +33,7 @@ import {
   Deadline,
   UInt64,
   PlainMessage,
-} from 'symbol-sdk'
+} from 'nem2-sdk'
 import {WalletsModel} from '@/core/database/entities/WalletsModel'
 import {WalletService} from '@/services/WalletService'
 
@@ -121,19 +121,20 @@ type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amou
               message: '',
             })
           }
-        }))
+        }),
+      )
 
-        const qrCode$ = result$.pipe(
-          pluck('img'),
-          mergeMap(item => {
-            return item
-          })
-        )
-        const copyMessage$ = result$.pipe(
-          pluck('message')
-        )
+    const qrCode$ = result$.pipe(
+      pluck('img'),
+      mergeMap(item => {
+        return item
+      }),
+    )
+    const copyMessage$ = result$.pipe(
+      pluck('message'),
+    )
 
-        return {qrCode$, copyMessage$}
+    return {qrCode$, copyMessage$}
   },
 })
 export class DashboardInvoicePageTs extends Vue {
@@ -400,7 +401,6 @@ export class DashboardInvoicePageTs extends Vue {
    * finish copying event handler
    */
   public onCopy() {
-    console.log(this.copyMessage$)
     this.$Message.success('内容已复制到剪切板！')
   }
 
