@@ -16,7 +16,7 @@
 // external dependencies
 import {Component, Vue} from 'vue-property-decorator'
 import {mapGetters} from 'vuex'
-import {pluck, concatMap} from 'rxjs/operators'
+import {pluck, concatMap, debounceTime, map, mergeMap} from 'rxjs/operators'
 import {of, Observable} from 'rxjs'
 import {QRCodeGenerator, TransactionQR} from 'symbol-qr-library'
 import {
@@ -104,17 +104,51 @@ type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amou
 
   })},
   subscriptions() {
-    const qrCode$ = this
+    const result$ = this
       .$watchAsObservable('transactionQR', {immediate: true})
-      .pipe(pluck('newValue'),
+      .pipe(
+        debounceTime(500), // throttle. Only the last one thing in a 500ms will be called
+        pluck('newValue'),
         concatMap((args) => {
-          if (args instanceof TransactionQR) return args.toBase64()
-          return of(failureIcon)
+          if (args instanceof TransactionQR) {     
+            return of({
+              img: args.toBase64(),
+              message: JSON.stringify(args),
+            })
+          } else {
+            return of({
+              img: of(failureIcon),
+              message: '',
+            })
+          }
         }))
-    return {qrCode$}
+
+        const qrCode$ = result$.pipe(
+          pluck('img'),
+          mergeMap(item => {
+            return item
+          })
+        )
+        const copyMessage$ = result$.pipe(
+          pluck('message')
+        )
+
+        return {qrCode$, copyMessage$}
   },
 })
 export class DashboardInvoicePageTs extends Vue {
+  /**
+   * Failure icon
+   */
+  public failureIcon: string = failureIcon
+
+
+  /**
+   * message for copying
+   * @type {Observable<string>}
+   */
+  public copyMessage$: Observable<string>
+
   /**
    * Network type
    * @see {Store.Network}
@@ -200,7 +234,7 @@ export class DashboardInvoicePageTs extends Vue {
    */
   public currentSigner: PublicAccount
 
-  // region computed properties getter/setter
+  /// region computed properties getter/setter
   /**
    * Recipient to be shown in the view
    * @readonly
@@ -239,6 +273,22 @@ export class DashboardInvoicePageTs extends Vue {
       return null
     }
   }
+
+  /**
+   * Get a list of known signers given a `currentWallet`
+   * @return {{publicKey: string, label:string}[]}
+   */
+  get signers(): {publicKey: string, label: string}[] {
+    return this.getSigners()
+  }
+
+  get selectedMosaic(): string {
+    return this.formItems.mosaicHex
+  }
+
+  set selectedMosaic(hex: string) {
+    this.formItems.mosaicHex = hex
+  }
   /// end-region computed properties getter/setter
 
   /**
@@ -270,13 +320,7 @@ export class DashboardInvoicePageTs extends Vue {
 
     // - start download
     a.dispatchEvent(event)
-  }
-
-  /// region computed properties getter/setter
-  get signers(): {publicKey: string, label: string}[] {
-    return this.getSigners()
-    // return this.getSigners()
-  }
+  }  
 
   /**
    * Internal helper to format a {Mosaic} entry into
@@ -373,15 +417,6 @@ export class DashboardInvoicePageTs extends Vue {
     this.generateQRCode()
   }
 
-
-  get selectedMosaic(): string {
-    return this.formItems.mosaicHex
-  }
-
-  set selectedMosaic(hex: string) {
-    this.formItems.mosaicHex = hex
-  }
-
   reset() {
     this.formItems.signerPublicKey = ''
     this.formItems.message = ''
@@ -434,6 +469,7 @@ export class DashboardInvoicePageTs extends Vue {
    * finish copying event handler
    */
   onCopy() {
+    console.log(this.copyMessage$)
     this.$Message.success('内容已复制到剪切板！')
   }
 

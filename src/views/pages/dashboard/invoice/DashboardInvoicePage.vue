@@ -9,7 +9,12 @@
         <Icon type="md-download" />
         <span>{{ $t('download') }}</span>
       </div>
-      <div class="header-button-group">
+      <div
+        v-clipboard:copy="copyMessage$" 
+        v-clipboard:success="onCopy"
+        v-clipboard:error="onError"
+        class="header-button-group"
+      >
         <Icon type="md-copy" />
         <span>{{ $t('copy') }}</span>
       </div>
@@ -17,7 +22,7 @@
     <div class="invoice-inner-container scroll">
       <div class="invoice-section-container">
         <div class="image-container">
-          <img id="qrImg" :src="qrCode$" alt="Transaction QR code">
+          <img id="qrImg" :src="qrCode$ || failureIcon" alt="Transaction QR code">
         </div>
         <div class="description-container">
           <div id="address_text" class="address_text top-qr-text">
