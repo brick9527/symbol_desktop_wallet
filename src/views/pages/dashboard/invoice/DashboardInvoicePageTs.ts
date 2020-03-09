@@ -16,9 +16,9 @@
 // external dependencies
 import {Component, Vue} from 'vue-property-decorator'
 import {mapGetters} from 'vuex'
-import {pluck, concatMap} from 'rxjs/operators'
+import {pluck, concatMap, debounceTime, map, mergeMap} from 'rxjs/operators'
 import {of, Observable} from 'rxjs'
-import {QRCodeGenerator, TransactionQR} from 'nem2-qr-library'
+import {QRCodeGenerator, TransactionQR} from 'symbol-qr-library'
 import {
   NetworkType,
   TransferTransaction,
@@ -33,7 +33,7 @@ import {
   Deadline,
   UInt64,
   PlainMessage,
-} from 'nem2-sdk'
+} from 'symbol-sdk'
 import {WalletsModel} from '@/core/database/entities/WalletsModel'
 import {WalletService} from '@/services/WalletService'
 
@@ -104,17 +104,51 @@ type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amou
 
   })},
   subscriptions() {
-    const qrCode$ = this
+    const result$ = this
       .$watchAsObservable('transactionQR', {immediate: true})
-      .pipe(pluck('newValue'),
+      .pipe(
+        debounceTime(500), // throttle. Only the last one thing in a 500ms will be called
+        pluck('newValue'),
         concatMap((args) => {
-          if (args instanceof TransactionQR) return args.toBase64()
-          return of(failureIcon)
+          if (args instanceof TransactionQR) {     
+            return of({
+              img: args.toBase64(),
+              message: JSON.stringify(args),
+            })
+          } else {
+            return of({
+              img: of(failureIcon),
+              message: '',
+            })
+          }
         }))
-    return {qrCode$}
+
+        const qrCode$ = result$.pipe(
+          pluck('img'),
+          mergeMap(item => {
+            return item
+          })
+        )
+        const copyMessage$ = result$.pipe(
+          pluck('message')
+        )
+
+        return {qrCode$, copyMessage$}
   },
 })
 export class DashboardInvoicePageTs extends Vue {
+  /**
+   * Failure icon
+   */
+  public failureIcon: string = failureIcon
+
+
+  /**
+   * message for copying
+   * @type {Observable<string>}
+   */
+  public copyMessage$: Observable<string>
+
   /**
    * Network type
    * @see {Store.Network}
@@ -200,7 +234,7 @@ export class DashboardInvoicePageTs extends Vue {
    */
   public currentSigner: PublicAccount
 
-  // region computed properties getter/setter
+  /// region computed properties getter/setter
   /**
    * Recipient to be shown in the view
    * @readonly
@@ -239,6 +273,28 @@ export class DashboardInvoicePageTs extends Vue {
       return null
     }
   }
+
+  /**
+   * Get a list of known signers given a `currentWallet`
+   * @return {{publicKey: string, label:string}[]}
+   */
+  get signers(): {publicKey: string, label: string}[] {
+    return this.getSigners()
+  }
+
+  /**
+   * Get current selected mosaic
+   */
+  get selectedMosaic(): string {
+    return this.formItems.mosaicHex
+  }
+
+  /**
+   * Set new selected mosaic
+   */
+  set selectedMosaic(hex: string) {
+    this.formItems.mosaicHex = hex
+  }
   /// end-region computed properties getter/setter
 
   /**
@@ -270,14 +326,92 @@ export class DashboardInvoicePageTs extends Vue {
 
     // - start download
     a.dispatchEvent(event)
+  }  
+
+  /**
+   * Hook called when a signer is selected.
+   * @param {string} signerPublicKey 
+   */
+  public async onChangeSigner(signerPublicKey: string) {
+    this.currentSigner = PublicAccount.createFromPublicKey(signerPublicKey, this.networkType)
+
+    const isCosig = this.currentWallet.values.get('publicKey') !== signerPublicKey
+    const payload = !isCosig ? this.currentWallet : {
+      networkType: this.networkType,
+      publicKey: signerPublicKey,
+    }
+
+    await this.$store.dispatch('wallet/SET_CURRENT_SIGNER', {model: payload})
+    this.generateQRCode()
   }
 
-  /// region computed properties getter/setter
-  get signers(): {publicKey: string, label: string}[] {
-    return this.getSigners()
-    // return this.getSigners()
+  /**
+   * Reset invoice form data. Clear all transaction list
+   */
+  public reset() {
+    this.formItems.signerPublicKey = ''
+    this.formItems.message = ''
+    this.formItems.amount = 0
+    this.transactions = []
   }
 
+  /**
+   * change amount value
+   * @param {number} value - new amount value
+   */
+  public changeAmount(value: string) {
+    this.formItems.amount = Number(value)
+    this.generateQRCode()
+  }
+
+  /**
+   * change mosaic choose
+   * @param {string} hex - new chosen mosaic hex
+   */
+  public changeMosaic(hex: string) {
+    this.formItems.mosaicHex = hex
+    this.generateQRCode()
+  }
+
+  /**
+   * change message content
+   * @param {string} msg - new message value
+   */
+  public changeMessage(msg: string) {
+    this.formItems.message = msg
+    this.generateQRCode()
+  }
+
+  /**
+   * generate QR code
+   */
+  public generateQRCode() {
+    const transfer = TransferTransaction.create(
+      Deadline.create(),
+      Address.createFromRawAddress(this.currentWallet.values.get('address')),
+      [new Mosaic(new MosaicId(this.formItems.mosaicHex), UInt64.fromUint(this.formItems.amount))],
+      PlainMessage.create(this.formItems.message),
+      this.networkType,
+    )
+    this.transactions.push(transfer)
+  }
+
+  /**
+   * finish copying event handler
+   */
+  public onCopy() {
+    console.log(this.copyMessage$)
+    this.$Message.success('内容已复制到剪切板！')
+  }
+
+  /**
+   * copy error event handler
+   */
+  public onError() {
+    this.$Message.error('复制失败')
+  }
+
+  /// region of protected methods
   /**
    * Internal helper to format a {Mosaic} entry into
    * an array of MosaicAttachmentType used in this form.
@@ -355,92 +489,5 @@ export class DashboardInvoicePageTs extends Vue {
 
     return self
   }
-
-  /**
-   * Hook called when a signer is selected.
-   * @param {string} signerPublicKey 
-   */
-  public async onChangeSigner(signerPublicKey: string) {
-    this.currentSigner = PublicAccount.createFromPublicKey(signerPublicKey, this.networkType)
-
-    const isCosig = this.currentWallet.values.get('publicKey') !== signerPublicKey
-    const payload = !isCosig ? this.currentWallet : {
-      networkType: this.networkType,
-      publicKey: signerPublicKey,
-    }
-
-    await this.$store.dispatch('wallet/SET_CURRENT_SIGNER', {model: payload})
-    this.generateQRCode()
-  }
-
-
-  get selectedMosaic(): string {
-    return this.formItems.mosaicHex
-  }
-
-  set selectedMosaic(hex: string) {
-    this.formItems.mosaicHex = hex
-  }
-
-  reset() {
-    this.formItems.signerPublicKey = ''
-    this.formItems.message = ''
-    this.formItems.amount = 0
-    this.transactions = []
-  }
-
-  /**
-   * change amount value
-   * @param {number} value - new amount value
-   */
-  changeAmount(value: string) {
-    this.formItems.amount = Number(value)
-    this.generateQRCode()
-  }
-
-  /**
-   * change mosaic choose
-   * @param {string} hex - new chosen mosaic hex
-   */
-  changeMosaic(hex: string) {
-    this.formItems.mosaicHex = hex
-    this.generateQRCode()
-  }
-
-  /**
-   * change message content
-   * @param {string} msg - new message value
-   */
-  changeMessage(msg: string) {
-    this.formItems.message = msg
-    this.generateQRCode()
-  }
-
-  /**
-   * generate QR code
-   */
-  generateQRCode() {
-    const transfer = TransferTransaction.create(
-      Deadline.create(),
-      Address.createFromRawAddress(this.currentWallet.values.get('address')),
-      [new Mosaic(new MosaicId(this.formItems.mosaicHex), UInt64.fromUint(this.formItems.amount))],
-      PlainMessage.create(this.formItems.message),
-      this.networkType,
-    )
-    this.transactions.push(transfer)
-  }
-
-  /**
-   * finish copying event handler
-   */
-  onCopy() {
-    this.$Message.success('内容已复制到剪切板！')
-  }
-
-  /**
-   * copy error event handler
-   */
-  onError() {
-    this.$Message.error('复制失败')
-  }
+  /// end-region of protected methods
 }
