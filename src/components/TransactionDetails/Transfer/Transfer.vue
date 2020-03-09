@@ -13,7 +13,7 @@
 <script lang="ts">
 // external dependencies
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { TransferTransaction, NamespaceId, Address, Message } from 'nem2-sdk'
+import { TransferTransaction, NamespaceId, Address, Message } from 'symbol-sdk'
 
 // internal dependencies
 import { ViewTransferTransaction } from '@/core/transactions/ViewTransferTransaction'
@@ -58,7 +58,6 @@ export default class Transfer extends Vue {
   protected get items(): { key: string, value: any, isMosaic?: boolean }[] {
     const attachedMosaics: AttachedMosaic[] = this.view.values.get('mosaics')
     const message: Message = this.view.values.get('message')
-    
 
     const mosaicItems = attachedMosaics.map((mosaic, index, self) => {
       return {

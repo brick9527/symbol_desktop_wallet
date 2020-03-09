@@ -18,7 +18,7 @@ import {Component, Vue} from 'vue-property-decorator'
 import {mapGetters} from 'vuex'
 import {pluck, concatMap} from 'rxjs/operators'
 import {of, Observable} from 'rxjs'
-import {QRCodeGenerator, TransactionQR} from 'nem2-qr-library'
+import {QRCodeGenerator, TransactionQR} from 'symbol-qr-library'
 import {
   NetworkType,
   TransferTransaction,
@@ -33,7 +33,7 @@ import {
   Deadline,
   UInt64,
   PlainMessage,
-} from 'nem2-sdk'
+} from 'symbol-sdk'
 import {WalletsModel} from '@/core/database/entities/WalletsModel'
 import {WalletService} from '@/services/WalletService'
 

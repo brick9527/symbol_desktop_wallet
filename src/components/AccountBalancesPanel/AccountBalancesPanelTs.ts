@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {MosaicId, Mosaic, MosaicInfo, NetworkType, Address} from 'nem2-sdk'
+import {MosaicId, Mosaic, MosaicInfo, NetworkType, Address} from 'symbol-sdk'
 import {Component, Vue} from 'vue-property-decorator'
 import {mapGetters} from 'vuex'
 
@@ -143,7 +143,7 @@ export class AccountBalancesPanelTs extends Vue {
   public get absoluteBalance() {
     const mosaics = [...this.currentMosaics]
 
-    if (!mosaics.length) {
+    if (!mosaics.length || !this.networkMosaic) {
       return 0
     }
 

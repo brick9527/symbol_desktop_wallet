@@ -17,7 +17,7 @@ import {
   AliasTransaction, NamespaceId, MosaicId, Address, AliasAction, AliasType,
   AddressAliasTransaction, MosaicAliasTransaction, MosaicInfo, NamespaceInfo,
   UInt64, Mosaic, TransactionType,
-} from 'nem2-sdk'
+} from 'symbol-sdk'
 import {Component, Prop} from 'vue-property-decorator'
 import {mapGetters} from 'vuex'
 
@@ -156,7 +156,8 @@ export class FormAliasTransactionTs extends FormTransactionBase {
     return this.ownedMosaics
       .filter((mosaicInfo) => {
         // no mosaics with names
-        if (this.mosaicsNamesByHex[mosaicInfo.id.toHex()] !== undefined) return false
+        const mosaicName = this.mosaicsNamesByHex[mosaicInfo.id.toHex()]
+        if (mosaicName && mosaicName.length) return false
 
         // mosaics must not be expired
         if (mosaicInfo.duration.compact() == 0) return true
