@@ -1184,6 +1184,9 @@
   "no_data_transactions": "No transactions were found for this account",
   "no_data_namespaces": "No namespaces were found for this account",
   "no_data_mosaics": "No mosaics were found for this account",
-  "reset": "Reset",
-  "download": "Download"
+  "button_reset": "Reset",
+  "button_download": "Download",
+  "button_copy": "Copy",
+  "copy_success": "Copy successful",
+  "copy_fail": "Copy fail"
 }

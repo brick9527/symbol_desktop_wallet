@@ -3,20 +3,25 @@
     <div class="invoice-header-container">
       <div class="header-button-group" @click="reset">
         <Icon type="ios-refresh" />
-        <span>{{ $t('reset') }}</span>
+        <span>{{ $t('button_reset') }}</span>
       </div>
       <div class="header-button-group" @click="onDownloadQR">
         <Icon type="md-download" />
-        <span>{{ $t('download') }}</span>
+        <span>{{ $t('button_download') }}</span>
       </div>
-      <div
+      <!-- <div
         v-clipboard:copy="copyMessage$" 
         v-clipboard:success="onCopy"
         v-clipboard:error="onError"
         class="header-button-group"
       >
         <Icon type="md-copy" />
-        <span>{{ $t('copy') }}</span>
+        <span>{{ $t('button_copy') }}</span>
+      </div> -->
+
+      <div class="header-button-group" @click="onCopy">
+        <Icon type="md-copy" />
+        <span>{{ $t('button_copy') }}</span>
       </div>
     </div>
     <div class="invoice-inner-container scroll">
@@ -38,9 +43,13 @@
           </div>
 
           <div class="qr-asset-value-box qr-value-box">
-            <MosaicSelectorDisplay 
+            <!-- <MosaicSelectorDisplay 
               :value="selectedMosaic" :mosaics="currentWalletMosaics" :default-mosaic="'networkMosaic'" 
               @input="changeMosaic"
+            /> -->
+            <MosaicSelector
+              :value="selectedMosaic" :mosaics="currentWalletMosaics" :default-mosaic="'networkMosaic'" 
+              @input="changeMosaic" 
             />
           </div>
 
@@ -56,7 +65,8 @@
             <span class="top-qr-text-title top-text">{{ $t('message') }}:</span>
           </div>
           <div class="qr-message-value-box qr-value-box">
-            <QRMessageInput :value="formItems.message" @change-message="changeMessage" />
+            <!-- <QRMessageInput :value="formItems.message" @change-message="changeMessage" /> -->
+            <MessageInput :value="formItems.message" @input="changeMessage" />
           </div>
         </div>
       </div>

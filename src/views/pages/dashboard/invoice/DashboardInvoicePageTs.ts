@@ -36,6 +36,7 @@ import {
 } from 'symbol-sdk'
 import {WalletsModel} from '@/core/database/entities/WalletsModel'
 import {WalletService} from '@/services/WalletService'
+import { UIHelpers } from '@/core/utils/UIHelpers'
 
 // child components
 // @ts-ignore
@@ -48,6 +49,10 @@ import MosaicSelectorDisplay from '@/components/MosaicSelectorDisplay/MosaicSele
 import EditableSpan from '@/components/EditableSpan/EditableSpan.vue'
 // @ts-ignore
 import SignerSelectorDisplay from '@/components/SignerSelectorDisplay/SignerSelectorDisplay.vue'
+// @ts-ignore
+import MosaicSelector from '@/components/MosaicSelector/MosaicSelector.vue'
+// @ts-ignore
+import MessageInput from '@/components/MessageInput/MessageInput.vue'
 
 // resources
 // @ts-ignore
@@ -92,6 +97,8 @@ type MosaicAttachmentType = {id: MosaicId, mosaicHex: string, name: string, amou
     MosaicSelectorDisplay,
     EditableSpan,
     SignerSelectorDisplay,
+    MosaicSelector,
+    MessageInput,
   },
   computed: {...mapGetters({
     networkType: 'network/networkType',
@@ -401,14 +408,16 @@ export class DashboardInvoicePageTs extends Vue {
    * finish copying event handler
    */
   public onCopy() {
-    this.$Message.success('内容已复制到剪切板！')
+    // this.$Message.success(this.$t('copy_success'))
+    UIHelpers.copyToClipboard('hello world')
+    this.$Message.success(this.$t('copy_success'))
   }
 
   /**
    * copy error event handler
    */
   public onError() {
-    this.$Message.error('复制失败')
+    this.$Message.error(this.$t('copy_fail'))
   }
 
   /// region of protected methods
